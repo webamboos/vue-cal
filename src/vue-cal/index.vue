@@ -254,7 +254,8 @@ export default defineComponent({
     twelveHour: { type: Boolean, default: false },
     watchRealTime: { type: Boolean, default: false }, // Expensive, so only trigger on demand.
     xsmall: { type: Boolean, default: false },
-    weekViewInterval: { type: Date, default: undefined }
+    xDaysStart: { type: Date, default: undefined },
+    xDaysInterval: { type: Number, default: 7 }
   },
 
   data () {
@@ -524,7 +525,7 @@ export default defineComponent({
         case 'xdays': {
           this.view.startDate = new Date(date)
           this.view.startDate.setHours(0, 0, 0, 0)
-          this.view.endDate = ud.addDays(new Date(this.view.startDate), 7)
+          this.view.endDate = ud.addDays(new Date(this.view.startDate), this.xDaysInterval)
           this.view.endDate.setSeconds(-1)
           break;
         }
@@ -604,7 +605,7 @@ export default defineComponent({
           firstCellDate = ud[next ? 'addDays' : 'subtractDays'](ud.getPreviousFirstDayOfWeek(startDate, this.startWeekOnSunday), 7)
           break
         case 'xdays':
-          firstCellDate = ud[next ? 'addDays' : 'subtractDays'](startDate, 7)
+          firstCellDate = ud[next ? 'addDays' : 'subtractDays'](startDate, this.xDaysInterval)
           break
         case 'day':
           firstCellDate = ud[next ? 'addDays' : 'subtractDays'](startDate, 1)
@@ -1664,6 +1665,7 @@ export default defineComponent({
               endDate,
               // To increase performance skip checking isToday if today already found.
               today: !todayFound && ud.isToday(startDate) && !todayFound++,
+              // TODO: Probably needs refactoring, but we don't use this yet.
               specialHours: this.specialDayHours[dayOfWeek] || []
             }
           }).filter((cell, i) => !weekDays[i].hide)

@@ -39,6 +39,6 @@ const now = new Date()
 
 <template>
   <div>
-    <VueCal :week-view-interval="now" :active-view="'xdays'" :events="events" />
+    <VueCal :x-days-start="now" :active-view="'xdays'" :events="events" />
   </div>
 </template>

@@ -1,12 +1,11 @@
 {
-  "name": "vue-cal",
+  "name": "@webamboos/vue-cal",
   "version": "4.9.0",
-  "description": "A Vue JS full calendar, no dependency, no BS. :metal:",
-  "author": "Antoni Andre <antoniandre.web@gmail.com>",
-  "homepage": "https://antoniandre.github.io/vue-cal",
-  "repository": "https://github.com/antoniandre/vue-cal",
+  "description": "A fork of vue-cal by Antoni Andre.",
+  "author": "Arpad Gabor <arpad.gabor@webamboos.com>",
+  "homepage": "https://github.com/webamboos/vue-cal",
+  "repository": "https://github.com/webamboos/vue-cal",
   "license": "MIT",
-  "funding": "https://github.com/sponsors/antoniandre",
   "main": "dist/vue-cal.cjs.js",
   "unpkg": "dist/vue-cal.iife.js",
   "jsdelivr": "dist/vue-cal.iife.js",
@@ -39,7 +38,6 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base /vue-cal/",
     "build-bundle": "BUNDLE=true vite build && mv ./dist/style.css ./dist/vuecal.css && rm ./dist/favicon.ico",
     "serve": "vite preview docs --base /vue-cal/",
     "lint": "vite lint"
