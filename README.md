@@ -1,6 +1,6 @@
 # Fork of vue-cal
 
-This is an open source fork of Vue-Cal, a library made by Antoni Andre for Vue. Our fork contains some small changes we needed for our own project.
+This is an open source fork of Vue-Cal, a library made by Antoni Andre for Vue. Our fork contains some small changes we needed for our own project. Please go to the [official documentation](https://antoniandre.github.io/vue-cal/) for more details about this library.
 
 ## Main changes
 
