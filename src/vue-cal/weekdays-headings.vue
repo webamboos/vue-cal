@@ -66,8 +66,8 @@ export default {
           small: label.substring(0, 3),
           xsmall: label.substring(0, 1),
 
-          // Only for week view.
-          ...(this.view.id === 'week' ? {
+          // Only for week or xdays view.
+          ...(['week', 'xdays'].includes(this.view.id) ? {
             dayOfMonth: date.getDate(),
             date,
             today: !todayFound && this.utils.date.isToday(date) && !todayFound++
