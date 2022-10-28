@@ -1,91 +1,44 @@
-<template lang="pug">
-w-app(:class="{ ready }" v-scroll="onScroll")
-  top-bar(:offset-top="offsetTop")
-  router-view
+<script setup lang="ts">
+import './scss/index.scss'
+import VueCal from './vue-cal/index.vue'
 
-  w-transition-twist
-    w-button.go-top.ma2(
-      v-show="!goTopHidden"
-      icon="material-icons keyboard_arrow_up"
-      fixed
-      bottom
-      right
-      round
-      xl
-      v-scroll-to="'#top'")
-
-  footer.page-container.w-flex.grey-dark1.wrap.justify-center.mt12.mb8
-    .w-divider.fill-width.mb8
-    .xs12.sm6.text-center.smu-text-left.copyright.
-      Copyright © {{ (new Date()).getFullYear() }} Antoni André, all rights reserved.
-    .xs12.sm6.text-center.smu-text-right.made-with
-      .mb1
-        | This documentation is made with
-        w-tooltip
-          template(#activator="{ on }")
-            w-icon(v-on="on") fab fa-vuejs
-          | Vue
-        w-tooltip
-          template(#activator="{ on }")
-            w-icon(v-on="on") fab fa-html5
-          | HTML5 &amp; Pug
-        w-tooltip
-          template(#activator="{ on }")
-            w-icon.ml1(v-on="on") fab fa-css3
-          | CSS3
-        w-tooltip
-          template(#activator="{ on }")
-            w-icon.ml1(v-on="on") fab fa-sass
-          | SCSS
-        span.ml2.mr1 &amp;
-        w-tooltip
-          template(#activator="{ on }")
-            w-icon(v-on="on").heart material-icons favorite
-          | Love
-      | View project on #[a(href="https://github.com/antoniandre/vue-cal" target="_blank") #[w-icon fab fa-github] Github].
-</template>
-
-<script>
-// Including the top bar from the documentation view and passing the
-// offsetTop var slows down too much the top bar animation on scroll.
-import TopBar from '@/documentation/components/top-bar.vue'
-import '@/scss/index.scss'
-
-export default {
-  name: 'app',
-  components: { TopBar },
-  data: () => ({
-    ready: false,
-    offsetTop: 0,
-    goTopHidden: true
-  }),
-  created () {
-    setTimeout(() => (this.ready = true), 500)
-  },
-  methods: {
-    onScroll () {
-      this.offsetTop = window.pageYOffset || document.documentElement.scrollTop
-      this.goTopHidden = this.offsetTop < 200 ||
-                         ((document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight) <= 100)
-    }
-  },
-  directives: {
-    scroll: {
-      mounted: (el, binding) => {
-        const f = evt => {
-          if (binding.value(evt, el)) window.removeEventListener('scroll', f)
-        }
-        window.addEventListener('scroll', f)
-      }
+const events = [
+    {
+      start: '2022-10-28 10:30:00',
+      end: '2022-10-28 12:30:00',
+      title: 'Dad\'s birthday!',
+      content: '<i class="icon material-icons">cake</i>',
+      class: 'sport'
     },
-    scrollTo: {
-      mounted: (el, binding) => {
-        el.addEventListener('click', () => {
-          const target = binding.value && document.querySelector(binding.value)
-          target.scrollIntoView()
-        })
-      }
+    {
+      start: '2022-10-29 10:30:00',
+      end: '2022-10-29 12:30:00',
+      title: 'Dad\'s birthday 2!',
+      content: '<i class="icon material-icons">cake</i>',
+      class: 'sport'
+    },
+    {
+      start: '2022-10-26 10:30:00',
+      end: '2022-10-26 12:30:00',
+      title: 'Dad\'s birthday 3!',
+      content: '<i class="icon material-icons">cake</i>',
+      class: 'sport'
+    },
+    {
+      start: '2022-10-30 10:30:00',
+      end: '2022-10-30 12:30:00',
+      title: 'Dad\'s birthday 4!',
+      content: '<i class="icon material-icons">cake</i>',
+      class: 'sport'
     }
-  }
-}
+  ]
+
+const now = new Date()
+
 </script>
+
+<template>
+  <div>
+    <VueCal :week-view-interval="now" :active-view="'xdays'" :events="events" />
+  </div>
+</template>

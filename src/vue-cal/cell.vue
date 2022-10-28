@@ -196,7 +196,7 @@ export default {
     setUpEventCreation (DOMEvent, startCursorY) {
       // If dragToCreateEvent is true, start the event creation from dragging
       // only on week and day views (doesn't make sense on month view).
-      if (this.options.dragToCreateEvent && ['week', 'day'].includes(this.view.id)) {
+      if (this.options.dragToCreateEvent && ['week', 'xdays', 'day'].includes(this.view.id)) {
         const { dragCreateAnEvent } = this.domEvents
         dragCreateAnEvent.startCursorY = startCursorY
 
@@ -218,7 +218,7 @@ export default {
       }
 
       // If the cellClickHold option is true and not mousedown on an event, click & hold to create an event.
-      else if (this.options.cellClickHold && ['month', 'week', 'day'].includes(this.view.id)) {
+      else if (this.options.cellClickHold && ['month', 'week', 'xdays', 'day'].includes(this.view.id)) {
         this.setUpCellHoldTimer(DOMEvent)
       }
     },
@@ -325,7 +325,7 @@ export default {
     },
     // Cache result for performance.
     isWeekOrDayView () {
-      return ['week', 'day'].includes(this.view.id)
+      return ['week', 'xdays', 'day'].includes(this.view.id)
     },
     transitionDirection () {
       return this.vuecal.transitionDirection
@@ -457,11 +457,13 @@ export default {
   // Cell modifiers.
   // -------------------------------------------------
   .vuecal__cells.month-view &,
+  .vuecal__cells.xdays-view &,
   .vuecal__cells.week-view & {
     width: 14.2857%;
   }
 
   .vuecal--hide-weekends .vuecal__cells.month-view &,
+  .vuecal--hide-weekends .vuecal__cells.xdays-view &,
   .vuecal--hide-weekends .vuecal__cells.week-view & {
     width: 20%;
   }

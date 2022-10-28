@@ -139,7 +139,8 @@
       div
 </template>
 
-<script>
+<script lang='js'>
+import { defineComponent } from 'vue'
 import DateUtils from './utils/date'
 import CellUtils from './utils/cell'
 import EventUtils from './utils/event'
@@ -147,7 +148,6 @@ import Header from './header.vue'
 import WeekdaysHeadings from './weekdays-headings.vue'
 import AllDayBar from './all-day-bar.vue'
 import Cell from './cell.vue'
-
 import './styles.scss'
 
 const minutesInADay = 24 * 60 // Don't do the maths every time.
@@ -170,7 +170,7 @@ const textsDefaults = {
   pm: 'pm'
 }
 
-const validViews = ['years', 'year', 'month', 'week', 'day']
+const validViews = ['years', 'year', 'month', 'week', 'xdays', 'day']
 
 // Only 1 instance of DateUtils for all the instances of Vue Cal, created when first importing the Vue Cal lib.
 // The dateUtils does not need to be dependent of Vue Cal instance, it only needs localized texts when ready.
@@ -178,7 +178,8 @@ const validViews = ['years', 'year', 'month', 'week', 'day']
 // documentation page. So the texts are overridable through a the `updateDateTexts` function.
 const dateUtils = new DateUtils(textsDefaults) // Do this ASAP for date prototypes.
 
-export default {
+// @ts-ignore
+export default defineComponent({
   name: 'vue-cal',
   components: { 'vuecal-cell': Cell, 'vuecal-header': Header, WeekdaysHeadings, AllDayBar },
 
@@ -202,7 +203,6 @@ export default {
 
   props: {
     activeView: { type: String, default: 'week' },
-    // Only used if there are daySplits with minSplitWidth, to add the same height top spacer on time column.
     allDayBarHeight: { type: [String, Number], default: '25px' },
     cellClickHold: { type: Boolean, default: true },
     cellContextmenu: { type: Boolean, default: false },
@@ -212,8 +212,6 @@ export default {
     disableDays: { type: Array, default: () => [] },
     disableViews: { type: Array, default: () => [] },
     dragToCreateEvent: { type: Boolean, default: true },
-    // Start a drag creation after dragging a certain amount of pixels.
-    // This prevents drag creation by mistake when you want to navigate.
     dragToCreateThreshold: { type: Number, default: 15 },
     editableEvents: { type: [Boolean, Object], default: false },
     events: { type: Array, default: () => [] },
@@ -255,7 +253,8 @@ export default {
     transitions: { type: Boolean, default: true },
     twelveHour: { type: Boolean, default: false },
     watchRealTime: { type: Boolean, default: false }, // Expensive, so only trigger on demand.
-    xsmall: { type: Boolean, default: false }
+    xsmall: { type: Boolean, default: false },
+    weekViewInterval: { type: Date, default: undefined }
   },
 
   data () {
@@ -522,6 +521,13 @@ export default {
           this.view.endDate.setSeconds(-1) // End at 23:59:59.
           break
         }
+        case 'xdays': {
+          this.view.startDate = new Date(date)
+          this.view.startDate.setHours(0, 0, 0, 0)
+          this.view.endDate = ud.addDays(new Date(this.view.startDate), 7)
+          this.view.endDate.setSeconds(-1)
+          break;
+        }
         case 'day': {
           this.view.startDate = date
           this.view.startDate.setHours(0, 0, 0, 0)
@@ -596,6 +602,9 @@ export default {
           break
         case 'week':
           firstCellDate = ud[next ? 'addDays' : 'subtractDays'](ud.getPreviousFirstDayOfWeek(startDate, this.startWeekOnSunday), 7)
+          break
+        case 'xdays':
+          firstCellDate = ud[next ? 'addDays' : 'subtractDays'](startDate, 7)
           break
         case 'day':
           firstCellDate = ud[next ? 'addDays' : 'subtractDays'](startDate, 1)
@@ -1334,6 +1343,7 @@ export default {
         year: { label: this.texts.year, enabled: !this.disableViews.includes('year') },
         month: { label: this.texts.month, enabled: !this.disableViews.includes('month') },
         week: { label: this.texts.week, enabled: !this.disableViews.includes('week') },
+        xdays: { label: this.texts.week, enabled: !this.disableViews.includes('xdays') },
         day: { label: this.texts.day, enabled: !this.disableViews.includes('day') }
       }
     },
@@ -1504,6 +1514,27 @@ export default {
           title = `${this.texts.week} ${ud.getWeek(this.startWeekOnSunday ? ud.addDays(date, 1) : date)} (${formattedMonthYear})`
           break
         }
+        case 'xdays': {
+          const lastDayOfWeek = this.view.endDate // Might be another day than Sunday, if hiding days.
+          const y1 = date.getFullYear()
+          let m1 = this.texts.months[date.getMonth()]
+          if (this.xsmall) m1 = m1.substring(0, 3)
+          let formattedMonthYear = `${m1} ${y1}`
+
+          // If week is not ending in the same month it started in.
+          if (lastDayOfWeek.getMonth() !== date.getMonth()) {
+            const y2 = lastDayOfWeek.getFullYear()
+            let m2 = this.texts.months[lastDayOfWeek.getMonth()]
+            if (this.xsmall) m2 = m2.substring(0, 3)
+            if (y1 === y2) formattedMonthYear = `${m1} - ${m2} ${y1}`
+            else {
+              if (this.small) formattedMonthYear = `${m1.substring(0, 3)} ${y1} - ${m2.substring(0, 3)} ${y2}`
+              else formattedMonthYear = `${m1} ${y1} - ${m2} ${y2}`
+            }
+          }
+          title = `${this.texts.week} ${ud.getWeek(this.startWeekOnSunday ? ud.addDays(date, 1) : date)} (${formattedMonthYear})`
+          break
+        }
         case 'day': {
           title = this.utils.date.formatDate(date, this.texts.dateFormat, this.texts)
           break
@@ -1616,6 +1647,28 @@ export default {
           }).filter((cell, i) => !weekDays[i].hide)
           break
         }
+        case 'xdays': {
+          todayFound = false
+          const firstDayOfWeek = this.view.startDate
+          const weekDays = this.weekDays
+
+          cells = weekDays.map((cell, i) => {
+            const startDate = ud.addDays(firstDayOfWeek, i)
+            const endDate = new Date(startDate)
+            endDate.setHours(23, 59, 59, 0) // End at 23:59:59.
+            const dayOfWeek = (startDate.getDay() || 7) - 1 // Day of the week from 0 to 6 with 6 = Sunday.
+
+            return {
+              startDate,
+              formattedDate: ud.formatDateLite(startDate),
+              endDate,
+              // To increase performance skip checking isToday if today already found.
+              today: !todayFound && ud.isToday(startDate) && !todayFound++,
+              specialHours: this.specialDayHours[dayOfWeek] || []
+            }
+          }).filter((cell, i) => !weekDays[i].hide)
+          break
+        }
         case 'day': {
           const startDate = this.view.startDate
           const endDate = new Date(this.view.startDate)
@@ -1679,10 +1732,10 @@ export default {
       return this.view.id === 'month'
     },
     isWeekOrDayView () {
-      return ['week', 'day'].includes(this.view.id)
+      return ['week', 'xdays', 'day'].includes(this.view.id)
     },
     isWeekView () {
-      return this.view.id === 'week'
+      return ['week', 'xdays'].includes(this.view.id)
     },
     isDayView () {
       return this.view.id === 'day'
@@ -1708,5 +1761,5 @@ export default {
       this.switchView(newVal)
     }
   }
-}
+})
 </script>

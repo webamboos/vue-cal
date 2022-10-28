@@ -6,8 +6,8 @@
       v-if="!heading.hide"
       :class="{ today: heading.today, clickable: cellHeadingsClickable }"
       :style="weekdayCellStyles"
-      @click="view.id === 'week' && selectCell(heading.date, $event)"
-      @dblclick="view.id === 'week' && vuecal.dblclickToNavigate && switchToNarrowerView()")
+      @click="['week', 'xdays'].includes(view.id) && selectCell(heading.date, $event)"
+      @dblclick="['week', 'xdays'].includes(view.id) && vuecal.dblclickToNavigate && switchToNarrowerView()")
       transition(:name="`slide-fade--${transitionDirection}`" :appear="vuecal.transitions")
         .vuecal__flex(column :key="vuecal.transitions ? `${i}-${heading.dayOfMonth}` : false")
           .vuecal__flex.weekday-label(grow)
@@ -49,19 +49,22 @@ export default {
 
   computed: {
     headings () {
-      if (!['month', 'week'].includes(this.view.id)) return []
+      if (!['month', 'week', 'xdays'].includes(this.view.id)) return []
 
       let todayFound = false
       const headings = this.weekDays.map((cell, i) => {
         const date = this.utils.date.addDays(this.view.startDate, this.vuecal.startWeekOnSunday ? i - 1 : i)
 
+        const dayName = new Intl.DateTimeFormat(this.vuecal.locale || 'en', { weekday: 'long' })
+        const label = dayName.format(date)
+
         return {
           hide: cell.hide,
-          full: cell.label,
+          full: label,
           // If defined in i18n file, weekDaysShort overrides default truncation of
           // week days when does not fit on screen or with small/xsmall options.
-          small: cell.short || cell.label.substr(0, 3),
-          xsmall: cell.short || cell.label.substr(0, 1),
+          small: label.substring(0, 3),
+          xsmall: label.substring(0, 1),
 
           // Only for week view.
           ...(this.view.id === 'week' ? {
