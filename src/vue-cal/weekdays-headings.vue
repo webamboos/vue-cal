@@ -49,32 +49,58 @@ export default {
 
   computed: {
     headings () {
-      if (!['month', 'week', 'xdays'].includes(this.view.id)) return []
-
       let todayFound = false
-      const headings = this.weekDays.map((cell, i) => {
-        const date = this.utils.date.addDays(this.view.startDate, this.vuecal.startWeekOnSunday ? i - 1 : i)
 
-        const dayName = new Intl.DateTimeFormat(this.vuecal.locale || 'en', { weekday: 'long' })
-        const label = dayName.format(date)
+      switch(this.view.id) {
+        case 'month':
+        case 'week': {
+          return this.weekDays.map((cell, i) => {
+            const date = this.utils.date.addDays(this.view.startDate, this.vuecal.startWeekOnSunday ? i - 1 : i)
 
-        return {
-          hide: cell.hide,
-          full: label,
-          // If defined in i18n file, weekDaysShort overrides default truncation of
-          // week days when does not fit on screen or with small/xsmall options.
-          small: label.substring(0, 3),
-          xsmall: label.substring(0, 1),
+            return {
+              hide: cell.hide,
+              full: cell.label,
+              // If defined in i18n file, weekDaysShort overrides default truncation of
+              // week days when does not fit on screen or with small/xsmall options.
+              small: cell.short || cell.label.substring(0, 3),
+              xsmall: cell.short || cell.label.substring(0, 1),
 
-          // Only for week or xdays view.
-          ...(['week', 'xdays'].includes(this.view.id) ? {
-            dayOfMonth: date.getDate(),
-            date,
-            today: !todayFound && this.utils.date.isToday(date) && !todayFound++
-          } : {})
+              // Only for week or xdays view.
+              ...(['week', 'xdays'].includes(this.view.id) ? {
+                dayOfMonth: date.getDate(),
+                date,
+                today: !todayFound && this.utils.date.isToday(date) && !todayFound++
+              } : {})
+            }
+          })
         }
-      })
-      return headings
+        case 'xdays': {
+          return this.weekDays.map((cell, i) => {
+            const date = this.utils.date.addDays(this.view.startDate, this.vuecal.startWeekOnSunday ? i - 1 : i)
+
+            const dayName = new Intl.DateTimeFormat(this.vuecal.locale || 'en', { weekday: 'long' })
+            const label = dayName.format(date)
+
+            return {
+              hide: cell.hide,
+              full: label,
+              // If defined in i18n file, weekDaysShort overrides default truncation of
+              // week days when does not fit on screen or with small/xsmall options.
+              small: label.substring(0, 3),
+              xsmall: label.substring(0, 1),
+
+              // Only for week or xdays view.
+              ...(['week', 'xdays'].includes(this.view.id) ? {
+                dayOfMonth: date.getDate(),
+                date,
+                today: !todayFound && this.utils.date.isToday(date) && !todayFound++
+              } : {})
+            }
+          })
+        }
+        default: { return [] }
+      }
+
     },
     cellWidth () {
       return 100 / (7 - this.weekDays.reduce((total, day) => total + day.hide, 0))
