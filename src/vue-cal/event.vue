@@ -297,7 +297,6 @@ export default {
     z-index: 1;
     transition: box-shadow 0.3s, left 0.3s, width 0.3s;
     overflow: hidden;
-    border: 1px solid black;
 
   // If nothing is shown inside, still make the event visible.
   .vuecal--no-time & {min-height: 8px;}
@@ -429,6 +428,6 @@ export default {
   }
 }
 .vuecal__event--focus{
-  z-index: 999999999999999999999999999999999!important;
+  z-index: 9999!important;
 }
 </style>
