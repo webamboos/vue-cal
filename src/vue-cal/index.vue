@@ -1065,7 +1065,7 @@ export default defineComponent({
           end,
           endTimeMinutes,
           daysCount: multipleDays ? ud.countDays(start, end) : 1,
-          class: event.class
+          class: event.class,
         })
 
         this.mutableEvents.push(event)

@@ -219,21 +219,25 @@ export default {
 
     eventStyles () {
       if (this.event.allDay || !this.vuecal.time || !this.event.endTimeMinutes || this.view.id === 'month' || this.allDay) return {}
+      let leftOld = (100 / (this.overlaps.length + 1)) * this.eventPosition * this.vuecal.time
+      
       let width = 100 / Math.min(this.overlaps.length + 1, this.overlapsStreak)
-      let left = (100 / (this.overlaps.length + 1)) * this.eventPosition
+
 
       if (this.vuecal.minEventWidth && width < this.vuecal.minEventWidth) {
         width = this.vuecal.minEventWidth
         left = ((100 - this.vuecal.minEventWidth) / this.overlaps.length) * this.eventPosition
       }
-
+      
       const { top, height } = this.eventDimensions
 
+    
       return {
         top: `${top}px`,
         height: `${height}px`,
-        width: `${width}%`,
-        left: (this.event.left && `${this.event.left}px`) || `${left}%`
+        width: `${100 - Math.min((this.event.left && this.event.left || leftOld))}%`,
+        left: (this.event.left && `${this.event.left}%`) || `${leftOld}%`,
+        'z-index': Math.round(leftOld + top),
       }
     },
 
@@ -285,14 +289,15 @@ export default {
 <style lang="scss">
 .vuecal__event {
   color: #666;
-  background-color: rgba(248, 248, 248, 0.8);
-  position: relative;
-  box-sizing: border-box;
-  left: 0;
-  width: 100%;
-  z-index: 1;
-  transition: box-shadow 0.3s, left 0.3s, width 0.3s;
-  overflow: hidden;// For sliding delete button.
+    background-color: rgba(191, 206, 243, 1);
+    position: relative;
+    box-sizing: border-box;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    transition: box-shadow 0.3s, left 0.3s, width 0.3s;
+    overflow: hidden;
+    border: 1px solid black;
 
   // If nothing is shown inside, still make the event visible.
   .vuecal--no-time & {min-height: 8px;}
@@ -422,5 +427,8 @@ export default {
     background-position: 99% 0.15em;
     background-size: 1.2em;
   }
+}
+.vuecal__event--focus{
+  z-index: 999999999999999999999999999999999!important;
 }
 </style>
