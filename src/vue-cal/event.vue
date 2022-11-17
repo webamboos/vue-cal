@@ -237,7 +237,7 @@ export default {
         height: `${height}px`,
         width: `${100 - Math.min((this.event.left && this.event.left || leftOld))}%`,
         left: (this.event.left && `${this.event.left}%`) || `${leftOld}%`,
-        'z-index': Math.round(leftOld + top),
+        'z-index': Math.round((this.event.left && this.event.left || leftOld) + top),
       }
     },
 
