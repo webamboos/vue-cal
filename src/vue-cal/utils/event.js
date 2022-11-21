@@ -316,7 +316,7 @@ export default class EventUtils {
   checkCellOverlappingEvents (cellEvents, options) {
 
 
-    _comparisonArray = cellEvents.slice(0,cellEvents.length - 1 ) 
+    _comparisonArray = cellEvents.slice(0) 
     console.log(_comparisonArray)
     
     _cellOverlaps = {}
