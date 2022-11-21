@@ -107,7 +107,7 @@ export default {
     },
     weekdayCellStyles () {
       return {
-        ...(this.vuecal.hideWeekdays.length ? { width: `${this.cellWidth}%` } : {})
+        ...(this.vuecal.hideWeekdays.length ? { width: `500px` } :  { width: `500px` })
       }
     },
     cellHeadingsClickable () {

@@ -314,7 +314,11 @@ export default class EventUtils {
   // Will recalculate all the overlaps of the current cell OR split.
   // cellEvents will contain only the current split events if in a split.
   checkCellOverlappingEvents (cellEvents, options) {
-    _comparisonArray = cellEvents.slice(0)
+
+
+    _comparisonArray = cellEvents.slice(0,cellEvents.length - 1 ) 
+    console.log(_comparisonArray)
+    
     _cellOverlaps = {}
 
     // Can't filter background events before calling this function otherwise
@@ -324,14 +328,17 @@ export default class EventUtils {
       // The array is smaller and smaller as we loop.
       _comparisonArray.shift()
 
-      if (!_cellOverlaps[e._eid]) _cellOverlaps[e._eid] = { overlaps: [], start: e.start, position: 0 }
+
+      if (!_cellOverlaps[e._eid]) _cellOverlaps[e._eid] = { overlaps: [], start: e.start,end: e.end, position: 0 }
       _cellOverlaps[e._eid].position = 0
 
+
+
       _comparisonArray.forEach(e2 => {
-        if (!_cellOverlaps[e2._eid]) _cellOverlaps[e2._eid] = { overlaps: [], start: e2.start, position: 0 }
+        if (!_cellOverlaps[e2._eid]) _cellOverlaps[e2._eid] = { overlaps: [], start: e2.start,end: e.end, position: 0 }
 
         const eventIsInRange = this.eventInRange(e2, e.start, e.end)
-        const eventsInSameTimeStep = options.overlapsPerTimeStep ? ud.datesInSameTimeStep(e.start, e2.start, options.timeStep) : 1
+        const eventsInSameTimeStep = options.overlapsPerTimeStep ? ud.datesInSameTimeStep(e.start, e2.start, options.timeStep) : 10
         // Add to the overlaps array if overlapping.
         if (!e.background && !e.allDay && !e2.background && !e2.allDay && eventIsInRange && eventsInSameTimeStep) {
           _cellOverlaps[e._eid].overlaps.push(e2._eid)
@@ -344,8 +351,8 @@ export default class EventUtils {
         // Remove from the overlaps array if not overlapping or if 1 of the 2 events is background or all-day long.
         else {
           let pos1, pos2
-          if ((pos1 = (_cellOverlaps[e._eid] || { overlaps: [] }).overlaps.indexOf(e2._eid)) > -1) _cellOverlaps[e._eid].overlaps.splice(pos1, 1)
-          if ((pos2 = (_cellOverlaps[e2._eid] || { overlaps: [] }).overlaps.indexOf(e._eid)) > -1) _cellOverlaps[e2._eid].overlaps.splice(pos2, 1)
+          if ((pos1 = (_cellOverlaps[e._eid] || { overlaps: [] }).overlaps.indexOf(e2._eid)) > 1) _cellOverlaps[e._eid].overlaps.splice(pos1, 0)
+          if ((pos2 = (_cellOverlaps[e2._eid] || { overlaps: [] }).overlaps.indexOf(e._eid)) > 1) _cellOverlaps[e2._eid].overlaps.splice(pos2, 0)
           _cellOverlaps[e2._eid].position--
         }
       })
@@ -363,8 +370,8 @@ export default class EventUtils {
       const item = _cellOverlaps[id]
 
       // Calculate the position of each event in current streak (determines the CSS left property).
-      const overlapsRow = item.overlaps.map(id2 => ({ id: id2, start: _cellOverlaps[id2].start }))
-      overlapsRow.push({ id, start: item.start })
+      const overlapsRow = item.overlaps.map(id2 => ({ id: id2, start: _cellOverlaps[id2].start, end: _cellOverlaps[id2].end }))
+      overlapsRow.push({ id, start: item.start, end: item.end })
       overlapsRow.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.id > b.id ? -1 : 1)))
       item.position = overlapsRow.findIndex(e => e.id === id)
 

@@ -3,13 +3,13 @@ transition-group.vuecal__cell(
   :class="cellClasses"
   :name="`slide-fade--${transitionDirection}`"
   tag="div"
-  :appear="options.transitions"
-  :style="cellStyles")
+  :appear="options.transitions")
   .vuecal__flex.vuecal__cell-content(
     v-for="(split, i) in (splitsCount ? splits : 1)"
     :key="options.transitions ? `${view.id}-${data.content}-${i}` : i"
     :class="splitsCount && splitClasses(split)"
     :data-split="splitsCount ? split.id : false"
+    :style="cellStyles"
     column
     tabindex="0"
     :aria-label="data.content"
@@ -421,9 +421,25 @@ export default {
       }
     },
     cellStyles () {
+      let width = 0
+      const [overlaps, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
+      const parsedOverlaps = Object.values(overlaps).sort((a, b) => a.position - b.position).reduce((obj, item) => {
+        obj[item.id] ? obj[item.position].elements.push(...item.elements) : (obj[item.position] = { ...item });
+        return obj;
+      }, {})
+
+      const overlappedEventsNumberArray = Object.values(parsedOverlaps).map(item => item?.overlaps?.length || 0)
+
+      const overlappedEventsMaxNumber = overlappedEventsNumberArray?.length ? Math.max(...overlappedEventsNumberArray) : 0
+
+      if(overlappedEventsMaxNumber > 0) {
+        width = (100 * overlappedEventsMaxNumber / 2 )
+      }
+
+    
       return {
         // cellWidth is only applied when hiding weekdays on month and week views.
-        ...(this.cellWidth ? { width: `${this.cellWidth}%` } : {})
+        ...(this.cellWidth ? { width: `${this.cellWidth}%` } : width ? { width: `${width}px` } :{ width: `198.28px` })
       }
     },
     timelineVisible () {
@@ -459,7 +475,7 @@ export default {
   .vuecal__cells.month-view &,
   .vuecal__cells.xdays-view &,
   .vuecal__cells.week-view & {
-    width: 14.2857%;
+    width: 100%;
   }
 
   .vuecal--hide-weekends .vuecal__cells.month-view &,
@@ -524,6 +540,7 @@ export default {
     width: 100%;
     height: 100%;
     outline: none;
+    min-width: 200px;
 
     .vuecal--years-view &,
     .vuecal--year-view &,

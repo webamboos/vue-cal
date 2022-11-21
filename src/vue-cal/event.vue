@@ -219,9 +219,10 @@ export default {
 
     eventStyles () {
       if (this.event.allDay || !this.vuecal.time || !this.event.endTimeMinutes || this.view.id === 'month' || this.allDay) return {}
-      let leftOld = (100 / (this.overlaps.length + 1)) * this.eventPosition * this.vuecal.time
-      
+
       let width = 100 / Math.min(this.overlaps.length + 1, this.overlapsStreak)
+      let left = width * this.eventPosition * this.vuecal.time
+      
 
 
       if (this.vuecal.minEventWidth && width < this.vuecal.minEventWidth) {
@@ -231,13 +232,14 @@ export default {
       
       const { top, height } = this.eventDimensions
 
+
     
       return {
         top: `${top}px`,
         height: `${height}px`,
-        width: `${100 - Math.min((this.event.left && this.event.left || leftOld))}%`,
-        left: (this.event.left && `${this.event.left}%`) || `${leftOld}%`,
-        'z-index': Math.round((this.event.left && this.event.left || leftOld) + top),
+        width: `${width}%`,
+        left: (this.event.left && `${this.event.left }%`) || `${left}%`,
+        'z-index': Math.round((this.event.left && this.event.left || left) + top),
       }
     },
 
@@ -297,6 +299,7 @@ export default {
     z-index: 1;
     transition: box-shadow 0.3s, left 0.3s, width 0.3s;
     overflow: hidden;
+    border: 1px solid black;
 
   // If nothing is shown inside, still make the event visible.
   .vuecal--no-time & {min-height: 8px;}
