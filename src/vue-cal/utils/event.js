@@ -47,7 +47,7 @@ export default class EventUtils {
     class: ''
   }
 
-  constructor (vuecal, dateUtils) {
+  constructor(vuecal, dateUtils) {
     this._vuecal = vuecal
     ud = dateUtils
   }
@@ -60,7 +60,7 @@ export default class EventUtils {
    * @param {Number} duration the event duration in minutes.
    * @param {Object} eventOptions some options to override the `eventDefaults` - optional.
    */
-  createAnEvent (dateTime, duration, eventOptions) {
+  createAnEvent(dateTime, duration, eventOptions) {
     if (typeof dateTime === 'string') dateTime = ud.stringToDate(dateTime)
     if (!(dateTime instanceof Date)) return false
 
@@ -117,7 +117,7 @@ export default class EventUtils {
    *
    * @param {Object} e the multiple-day event to add segment in.
    */
-  addEventSegment (e) {
+  addEventSegment(e) {
     // If event was previously single-day, event.segments = null,
     // so first create the first segment (first day).
     if (!e.segments) {
@@ -166,7 +166,7 @@ export default class EventUtils {
    *
    * @param {Object} e the multiple-day event to remove segments from.
    */
-  removeEventSegment (e) {
+  removeEventSegment(e) {
     let segmentsCount = Object.keys(e.segments).length
     if (segmentsCount <= 1) return ud.formatDateLite(e.end)
 
@@ -208,7 +208,7 @@ export default class EventUtils {
    * @param {Date} viewStartDate the starting date of the view.
    * @param {Date} viewEndDate the ending date of the view.
    */
-  createEventSegments (e, viewStartDate, viewEndDate) {
+  createEventSegments(e, viewStartDate, viewEndDate) {
     const viewStartTimestamp = viewStartDate.getTime()
     const viewEndTimestamp = viewEndDate.getTime()
     let eventStart = e.start.getTime()
@@ -299,7 +299,7 @@ export default class EventUtils {
    *
    * @param {Object} event the calendar event to delete.
    */
-  deleteAnEvent (event) {
+  deleteAnEvent(event) {
     this._vuecal.emitWithEvent('event-delete', event)
 
     // Delete the event globally.
@@ -313,12 +313,9 @@ export default class EventUtils {
   // ===================================================================
   // Will recalculate all the overlaps of the current cell OR split.
   // cellEvents will contain only the current split events if in a split.
-  checkCellOverlappingEvents (cellEvents, options) {
+  checkCellOverlappingEvents(cellEvents, options) {
+    _comparisonArray = cellEvents.slice(0)
 
-
-    _comparisonArray = cellEvents.slice(0) 
-    console.log(_comparisonArray)
-    
     _cellOverlaps = {}
 
     // Can't filter background events before calling this function otherwise
@@ -329,30 +326,38 @@ export default class EventUtils {
       _comparisonArray.shift()
 
 
-      if (!_cellOverlaps[e._eid]) _cellOverlaps[e._eid] = { overlaps: [], start: e.start,end: e.end, position: 0 }
+      if (!_cellOverlaps[e._eid]) _cellOverlaps[e._eid] = { overlaps: [], start: e.start, position: 0 }
       _cellOverlaps[e._eid].position = 0
 
 
 
       _comparisonArray.forEach(e2 => {
-        if (!_cellOverlaps[e2._eid]) _cellOverlaps[e2._eid] = { overlaps: [], start: e2.start,end: e.end, position: 0 }
+        if (!_cellOverlaps[e2._eid]) _cellOverlaps[e2._eid] = { overlaps: [], start: e2.start, position: 0 }
 
         const eventIsInRange = this.eventInRange(e2, e.start, e.end)
-        const eventsInSameTimeStep = options.overlapsPerTimeStep ? ud.datesInSameTimeStep(e.start, e2.start, options.timeStep) : 10
+        const eventsInSameTimeStep = options.overlapsPerTimeStep ? ud.datesInSameTimeStep(e.start, e2.start, options.timeStep) : 3
         // Add to the overlaps array if overlapping.
         if (!e.background && !e.allDay && !e2.background && !e2.allDay && eventIsInRange && eventsInSameTimeStep) {
-          _cellOverlaps[e._eid].overlaps.push(e2._eid)
-          _cellOverlaps[e._eid].overlaps = [...new Set(_cellOverlaps[e._eid].overlaps)] // Dedupe, most performant way.
+          if (e2.start > e.start && e2.end < e.end && _cellOverlaps[e2._eid].overlaps.length <= 0) {
+            _cellOverlaps[e2._eid].position = 0
+            _cellOverlaps[e2._eid].overlaps.push(e2._eid)
+            const filteredArray2 = _cellOverlaps[e2._eid].overlaps.filter(o => o._eid !== e._eid)
+            _cellOverlaps[e2._eid].overlaps = [...new Set(filteredArray2)]
+          } else {
 
-          _cellOverlaps[e2._eid].overlaps.push(e._eid)
-          _cellOverlaps[e2._eid].overlaps = [...new Set(_cellOverlaps[e2._eid].overlaps)] // Dedupe, most performant way.
-          _cellOverlaps[e2._eid].position++
+            _cellOverlaps[e._eid].overlaps.push(e2._eid)
+            _cellOverlaps[e._eid].overlaps = [...new Set(_cellOverlaps[e._eid].overlaps)] // Dedupe, most performant way.
+
+            _cellOverlaps[e2._eid].overlaps.push(e._eid)
+            _cellOverlaps[e2._eid].overlaps = [...new Set(_cellOverlaps[e2._eid].overlaps)] // Dedupe, most performant way.
+            _cellOverlaps[e2._eid].position++
+          }
         }
         // Remove from the overlaps array if not overlapping or if 1 of the 2 events is background or all-day long.
         else {
           let pos1, pos2
-          if ((pos1 = (_cellOverlaps[e._eid] || { overlaps: [] }).overlaps.indexOf(e2._eid)) > 1) _cellOverlaps[e._eid].overlaps.splice(pos1, 0)
-          if ((pos2 = (_cellOverlaps[e2._eid] || { overlaps: [] }).overlaps.indexOf(e._eid)) > 1) _cellOverlaps[e2._eid].overlaps.splice(pos2, 0)
+          if ((pos1 = (_cellOverlaps[e._eid] || { overlaps: [] }).overlaps.indexOf(e2._eid)) > -1) _cellOverlaps[e._eid].overlaps.splice(pos1, 1)
+          if ((pos2 = (_cellOverlaps[e2._eid] || { overlaps: [] }).overlaps.indexOf(e._eid)) > -1) _cellOverlaps[e2._eid].overlaps.splice(pos2, 1)
           _cellOverlaps[e2._eid].position--
         }
       })
@@ -370,8 +375,8 @@ export default class EventUtils {
       const item = _cellOverlaps[id]
 
       // Calculate the position of each event in current streak (determines the CSS left property).
-      const overlapsRow = item.overlaps.map(id2 => ({ id: id2, start: _cellOverlaps[id2].start, end: _cellOverlaps[id2].end }))
-      overlapsRow.push({ id, start: item.start, end: item.end })
+      const overlapsRow = item.overlaps.map(id2 => ({ id: id2, start: _cellOverlaps[id2].start }))
+      overlapsRow.push({ id, start: item.start })
       overlapsRow.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.id > b.id ? -1 : 1)))
       item.position = overlapsRow.findIndex(e => e.id === id)
 
@@ -391,7 +396,7 @@ export default class EventUtils {
    * @param {Object} cellOverlaps An indexed array of all the events overlaps for the current cell.
    * @return {Number} The number of simultaneous event for this event.
    */
-  getOverlapsStreak (event, cellOverlaps = {}) {
+  getOverlapsStreak(event, cellOverlaps = {}) {
     let streak = event.overlaps.length + 1
     let removeFromStreak = []
     event.overlaps.forEach(id => {
@@ -416,14 +421,14 @@ export default class EventUtils {
    * @param {Date} end The end of range date object.
    * @return {Boolean} true if in range, even partially.
    */
-  eventInRange (event, start, end) {
+  eventInRange(event, start, end) {
     // Check if all-day or timeless event (if date but no time there won't be a `:` in event.start).
     if (event.allDay || !this._vuecal.time) {
       // Get the date and discard the time if any, then check it's within the date range.
       const startTimestamp = new Date(event.start).setHours(0, 0, 0, 0)
       const endTimestamp = new Date(event.end).setHours(23, 59, 0, 0)
       return (endTimestamp >= new Date(start).setHours(0, 0, 0, 0) &&
-      startTimestamp <= new Date(end).setHours(0, 0, 0, 0))
+        startTimestamp <= new Date(end).setHours(0, 0, 0, 0))
     }
 
     const startTimestamp = event.start.getTime()

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import "./scss/index.scss";
 import VueCal from "./vue-cal/index.vue";
-
-const events = [
+const events  = [
 {
   start: "2022-11-21 05:30:00",
   end: "2022-11-21 06:30:00",
@@ -163,15 +162,15 @@ const events = [
     class: "sport",
   },
   {
-    start: "2022-11-22 15:00:00",
-    end: "2022-11-22 15:30:00",
+    start: "2022-11-22 16:30:00",
+    end: "2022-11-22 17:30:00",
     title: "23 Dad's birthday 2!",
     content: '<i class="icon material-icons">cake</i>',
     class: "sport",
   },
   {
-    start: "2022-11-22 15:00:00",
-    end: "2022-11-22 15:15:00",
+    start: "2022-11-22 16:30:00",
+    end: "2022-11-22 17:15:00",
     title: "24 Dad's birthday 2!",
     content: '<i class="icon material-icons">cake</i>',
     class: "sport",

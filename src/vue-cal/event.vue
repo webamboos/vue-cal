@@ -221,7 +221,9 @@ export default {
       if (this.event.allDay || !this.vuecal.time || !this.event.endTimeMinutes || this.view.id === 'month' || this.allDay) return {}
 
       let width = 100 / Math.min(this.overlaps.length + 1, this.overlapsStreak)
-      let left = width * this.eventPosition * this.vuecal.time
+      let left = width * this.eventPosition
+
+      console.log(this.event.title, this.overlaps.length, this.eventPosition)
       
 
 
