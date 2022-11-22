@@ -69,8 +69,8 @@ export default {
   props: {
     // Vue-cal main component options (props).
     options: { type: Object, default: () => ({}) },
-    editEvents: { type: Object, required: true },
     data: { type: Object, required: true },
+    editEvents: { type: Object, required: true },
     cellSplits: { type: Array, default: () => [] },
     minTimestamp: { type: [Number, null], default: null },
     maxTimestamp: { type: [Number, null], default: null },
@@ -421,6 +421,7 @@ export default {
       }
     },
     cellStyles () {
+
       let width = 0
       const [overlaps, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
       const parsedOverlaps = Object.values(overlaps).sort((a, b) => a.position - b.position).reduce((obj, item) => {
