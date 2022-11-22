@@ -9,7 +9,7 @@ transition-group.vuecal__cell(
     :key="options.transitions ? `${view.id}-${data.content}-${i}` : i"
     :class="splitsCount && splitClasses(split)"
     :data-split="splitsCount ? split.id : false"
-    :style="cellStyles"
+    :style="view.id !== 'day'? cellStyles :'width:100%'"
     column
     tabindex="0"
     :aria-label="data.content"
@@ -422,24 +422,25 @@ export default {
     },
     cellStyles () {
       let width = 0
-      // const [overlaps, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
-      // const parsedOverlaps = Object.values(overlaps).sort((a, b) => a.position - b.position).reduce((obj, item) => {
-      //   obj[item.id] ? obj[item.position].elements.push(...item.elements) : (obj[item.position] = { ...item });
-      //   return obj;
-      // }, {})
+      const [overlaps, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
+      const parsedOverlaps = Object.values(overlaps).sort((a, b) => a.position - b.position).reduce((obj, item) => {
+        obj[item.id] ? obj[item.position].elements.push(...item.elements) : (obj[item.position] = { ...item });
+        return obj;
+      }, {})
+    
 
-      // const overlappedEventsNumberArray = Object.values(parsedOverlaps).map(item => item?.overlaps?.length || 0)
+      const overlappedEventsNumberArray = Object.values(parsedOverlaps).map(item => item?.overlaps?.length || 0)
 
-      // const overlappedEventsMaxNumber = overlappedEventsNumberArray?.length ? Math.max(...overlappedEventsNumberArray) : 0
+      const overlappedEventsMaxNumber = overlappedEventsNumberArray?.length ? Math.max(...overlappedEventsNumberArray) : 0
 
-      // if(overlappedEventsMaxNumber > 0) {
-      //   width = (100 * overlappedEventsMaxNumber / 2 )
-      // }
-
+      if(overlappedEventsMaxNumber > 0) {
+        width = (100 * overlappedEventsMaxNumber) 
+      }
+      console.log(this.view.id)
     
       return {
         // cellWidth is only applied when hiding weekdays on month and week views.
-        ...(this.cellWidth ? { width: `${this.cellWidth}%` } : width ? { width: `${width}px` } :{ })
+        ...(this.cellWidth  ? { width: `${this.cellWidth}%` } : width ? { width: `${width}px` } :{ })
       }
     },
     timelineVisible () {
@@ -477,6 +478,8 @@ export default {
   .vuecal__cells.week-view & {
     width: 100%;
   }
+
+ 
 
   .vuecal--hide-weekends .vuecal__cells.month-view &,
   .vuecal--hide-weekends .vuecal__cells.xdays-view &,

@@ -106,8 +106,25 @@ export default {
       return 100 / (7 - this.weekDays.reduce((total, day) => total + day.hide, 0))
     },
     weekdayCellStyles () {
+      let width = 0
+      console.log(this.utils)
+      // const [overlaps, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
+      // const parsedOverlaps = Object.values(overlaps).sort((a, b) => a.position - b.position).reduce((obj, item) => {
+      //   obj[item.id] ? obj[item.position].elements.push(...item.elements) : (obj[item.position] = { ...item });
+      //   return obj;
+      // }, {})
+      // console.log(streak, parsedOverlaps)
+
+      // const overlappedEventsNumberArray = Object.values(parsedOverlaps).map(item => item?.overlaps?.length || 0)
+
+      // const overlappedEventsMaxNumber = overlappedEventsNumberArray?.length ? Math.max(...overlappedEventsNumberArray) : 0
+
+      // if(overlappedEventsMaxNumber > 0) {
+      //   width = (100 * overlappedEventsMaxNumber) 
+      // }
       return {
-        ...(this.vuecal.hideWeekdays.length ? { width: `500px` } :  { width: `500px` })
+        // ...(this.vuecal.hideWeekdays.length ? { width: `500px` } :  { width: `500px` })
+        ...(this.vuecal.hideWeekdays.length ? { width: `${this.vuecal.hideWeekdays.length}%` } : width ? { width: `${width}px` } :{ })
       }
     },
     cellHeadingsClickable () {

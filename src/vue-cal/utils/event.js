@@ -344,7 +344,6 @@ export default class EventUtils {
             const filteredArray2 = _cellOverlaps[e2._eid].overlaps.filter(o => o._eid !== e._eid)
             _cellOverlaps[e2._eid].overlaps = [...new Set(filteredArray2)]
 
-            console.log(e2._eid, e2.title,_cellOverlaps[e2._eid])
           } else {
 
             _cellOverlaps[e._eid].overlaps.push(e2._eid)
