@@ -223,18 +223,18 @@ export default {
       let width = 100 / Math.min(this.overlaps.length + 1, this.overlapsStreak)
       let left = width * this.eventPosition
 
-      
+
 
 
       if (this.vuecal.minEventWidth && width < this.vuecal.minEventWidth) {
         width = this.vuecal.minEventWidth
         left = ((100 - this.vuecal.minEventWidth) / this.overlaps.length) * this.eventPosition
       }
-      
+
       const { top, height } = this.eventDimensions
 
 
-    
+
       return {
         top: `${top}px`,
         height: `${height}px`,
@@ -300,7 +300,7 @@ export default {
     z-index: 1;
     transition: box-shadow 0.3s, left 0.3s, width 0.3s;
     overflow: hidden;
-    border: 1px solid black;
+    // border: 1px solid black;
 
   // If nothing is shown inside, still make the event visible.
   .vuecal--no-time & {min-height: 8px;}

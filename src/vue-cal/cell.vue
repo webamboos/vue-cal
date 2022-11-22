@@ -428,17 +428,17 @@ export default {
         obj[item.id] ? obj[item.position].elements.push(...item.elements) : (obj[item.position] = { ...item });
         return obj;
       }, {})
-    
+
 
       const overlappedEventsNumberArray = Object.values(parsedOverlaps).map(item => item?.overlaps?.length || 0)
 
       const overlappedEventsMaxNumber = overlappedEventsNumberArray?.length ? Math.max(...overlappedEventsNumberArray) : 0
 
       if(overlappedEventsMaxNumber > 0) {
-        width = (100 * overlappedEventsMaxNumber) 
+        width = (100 * overlappedEventsMaxNumber)
       }
       console.log(this.view.id)
-    
+
       return {
         // cellWidth is only applied when hiding weekdays on month and week views.
         ...(this.cellWidth  ? { width: `${this.cellWidth}%` } : width ? { width: `${width}px` } :{ })
@@ -480,7 +480,7 @@ export default {
     width: 100%;
   }
 
- 
+
 
   .vuecal--hide-weekends .vuecal__cells.month-view &,
   .vuecal--hide-weekends .vuecal__cells.xdays-view &,

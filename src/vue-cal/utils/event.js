@@ -313,78 +313,47 @@ export default class EventUtils {
   // ===================================================================
   // Will recalculate all the overlaps of the current cell OR split.
   // cellEvents will contain only the current split events if in a split.
+  /**
+   *
+   * @param {{ _eid: string }[]} cellEvents
+   * @param {any} options
+   * @returns
+   */
   checkCellOverlappingEvents(cellEvents, options) {
     _comparisonArray = cellEvents.slice(0)
 
-    _cellOverlaps = {}
-
-    // Can't filter background events before calling this function otherwise
-    // when an event is changed to background it would not update its previous overlaps.
-    cellEvents.forEach(e => {
-      // For performance, never compare the current event in the next loops.
-      // The array is smaller and smaller as we loop.
-      _comparisonArray.shift()
+    _cellOverlaps = cellEvents.reduce((obj, ev) => ({
+      ...obj,
+      [ev._eid]: { overlaps: [], start: ev.start, position: 9999 }
+    }), {})
 
 
-      if (!_cellOverlaps[e._eid]) _cellOverlaps[e._eid] = { overlaps: [], start: e.start, position: 0 }
-      _cellOverlaps[e._eid].position = 0
-
-
-
-      _comparisonArray.forEach(e2 => {
-        if (!_cellOverlaps[e2._eid]) _cellOverlaps[e2._eid] = { overlaps: [], start: e2.start, position: 0 }
-
-        const eventIsInRange = this.eventInRange(e2, e.start, e.end)
-        const eventsInSameTimeStep = options.overlapsPerTimeStep ? ud.datesInSameTimeStep(e.start, e2.start, options.timeStep) : 3
-        // Add to the overlaps array if overlapping.
-        if (!e.background && !e.allDay && !e2.background && !e2.allDay && eventIsInRange && eventsInSameTimeStep) {
-          if ((e2.start > e.start && e2.end < e.end && _cellOverlaps[e2._eid].overlaps.length <= 0)) {
-            _cellOverlaps[e2._eid].position = 0
-            _cellOverlaps[e2._eid].overlaps.push(e2._eid)
-            const filteredArray2 = _cellOverlaps[e2._eid].overlaps.filter(o => o._eid !== e._eid)
-            _cellOverlaps[e2._eid].overlaps = [...new Set(filteredArray2)]
-
-          } else {
-
-            _cellOverlaps[e._eid].overlaps.push(e2._eid)
-            _cellOverlaps[e._eid].overlaps = [...new Set(_cellOverlaps[e._eid].overlaps)] // Dedupe, most performant way.
-
-            _cellOverlaps[e2._eid].overlaps.push(e._eid)
-            _cellOverlaps[e2._eid].overlaps = [...new Set(_cellOverlaps[e2._eid].overlaps)] // Dedupe, most performant way.
-            _cellOverlaps[e2._eid].position++
-          }
-        }
-        // Remove from the overlaps array if not overlapping or if 1 of the 2 events is background or all-day long.
-        else {
-          let pos1, pos2
-          if ((pos1 = (_cellOverlaps[e._eid] || { overlaps: [] }).overlaps.indexOf(e2._eid)) > -1) _cellOverlaps[e._eid].overlaps.splice(pos1, 1)
-          if ((pos2 = (_cellOverlaps[e2._eid] || { overlaps: [] }).overlaps.indexOf(e._eid)) > -1) _cellOverlaps[e2._eid].overlaps.splice(pos2, 1)
-          _cellOverlaps[e2._eid].position--
-        }
+    let mostOverlaps = 0
+    for (const event of cellEvents) {
+      const overlappingEvents = cellEvents.filter(e => {
+        return this.eventInRange(event, e.start, e.end) && (e._eid !== event._eid)
       })
-    })
 
-    // Overlaps streak is the longest horizontal set of simultaneous events.
-    // This is determining the width of events in a streak.
-    // e.g. 3 overlapping events in a cell:
-    //  ___   ___
-    // | 1 | |_2_|  1 overlaps 2 & 3; 2 & 3 don't overlap;
-    // |   |  ___   => streak = 2; each width = 50% not 33%.
-    // |___| |_3_|
-    let longestStreak = 0
-    for (const id in _cellOverlaps) {
-      const item = _cellOverlaps[id]
+      mostOverlaps = overlappingEvents.length > mostOverlaps ? overlappingEvents.length : mostOverlaps
 
-      // Calculate the position of each event in current streak (determines the CSS left property).
-      const overlapsRow = item.overlaps.map(id2 => ({ id: id2, start: _cellOverlaps[id2].start }))
-      overlapsRow.push({ id, start: item.start })
-      overlapsRow.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : (a.id > b.id ? -1 : 1)))
-      item.position = overlapsRow.findIndex(e => e.id === id)
+      let done = false
+      let position = 0
+      while (!done) {
+        if(overlappingEvents.some(ev => _cellOverlaps[ev._eid].position === position)) {
+          position += 1
+        } else {
+          _cellOverlaps[event._eid] = {
+            position: position,
+            overlaps: overlappingEvents.map(e => e._eid),
+            start: event.start
+          }
 
-      longestStreak = Math.max(this.getOverlapsStreak(item, _cellOverlaps), longestStreak)
+          done = true;
+        }
+      }
     }
 
-    return [_cellOverlaps, longestStreak]
+    return [_cellOverlaps, mostOverlaps]
   }
 
   /**

@@ -326,7 +326,7 @@ const events  = [
     content: '<i class="icon material-icons">cake</i>',
     class: "sport",
   },
-  
+
   {
     start: "2022-11-24 07:00:00",
     end: "2022-11-24 08:00:00",
@@ -480,7 +480,7 @@ const events  = [
     content: '<i class="icon material-icons">cake</i>',
     class: "sport",
   },
- 
+
 ];
 
 const now = new Date();
@@ -488,6 +488,6 @@ const now = new Date();
 
 <template>
   <div>
-    <VueCal :x-days-start="now" :active-view="'xdays'" :events="events" />
+    <VueCal :x-days-start="now" :active-view="'xdays'" :events="events" editable-events />
   </div>
 </template>
