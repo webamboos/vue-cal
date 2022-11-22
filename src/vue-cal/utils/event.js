@@ -338,11 +338,13 @@ export default class EventUtils {
         const eventsInSameTimeStep = options.overlapsPerTimeStep ? ud.datesInSameTimeStep(e.start, e2.start, options.timeStep) : 3
         // Add to the overlaps array if overlapping.
         if (!e.background && !e.allDay && !e2.background && !e2.allDay && eventIsInRange && eventsInSameTimeStep) {
-          if (e2.start > e.start && e2.end < e.end && _cellOverlaps[e2._eid].overlaps.length <= 0) {
+          if ((e2.start > e.start && e2.end < e.end && _cellOverlaps[e2._eid].overlaps.length <= 0)) {
             _cellOverlaps[e2._eid].position = 0
             _cellOverlaps[e2._eid].overlaps.push(e2._eid)
             const filteredArray2 = _cellOverlaps[e2._eid].overlaps.filter(o => o._eid !== e._eid)
             _cellOverlaps[e2._eid].overlaps = [...new Set(filteredArray2)]
+
+            console.log(e2._eid, e2.title,_cellOverlaps[e2._eid])
           } else {
 
             _cellOverlaps[e._eid].overlaps.push(e2._eid)

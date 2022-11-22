@@ -223,7 +223,7 @@ export default {
       let width = 100 / Math.min(this.overlaps.length + 1, this.overlapsStreak)
       let left = width * this.eventPosition
 
-      console.log(this.event.title, this.overlaps.length, this.eventPosition)
+      // console.log(this.event.title, this.overlaps.length, this.eventPosition)
       
 
 
