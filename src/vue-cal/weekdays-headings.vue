@@ -1,11 +1,11 @@
 <template lang="pug">
 //- weekdays-headings are on week view only.
-.vuecal__flex.vuecal__weekdays-headings
+.vuecal__flex.vuecal__weekdays-headings.syncro-scroll
   template(v-for="(heading, i) in headings" :key="i")
     .vuecal__flex.vuecal__heading(
       v-if="!heading.hide"
       :class="{ today: heading.today, clickable: cellHeadingsClickable }"
-      :style="weekdayCellStyles"
+      :style="weekdayCellStyles[heading.date]"
       @click="['week', 'xdays'].includes(view.id) && selectCell(heading.date, $event)"
       @dblclick="['week', 'xdays'].includes(view.id) && vuecal.dblclickToNavigate && switchToNarrowerView()")
       transition(:name="`slide-fade--${transitionDirection}`" :appear="vuecal.transitions")
@@ -46,6 +46,18 @@ export default {
       date: heading.date,
       ...(heading.today ? { today: heading.today } : {})
     })
+  },
+  
+  watch: {
+    vuecal: {
+      // To be able to detect an event attribute change, it has to be first initialized with a value.
+      handler(events, oldEvents) {
+        console.log('events', events)
+        console.log('oldEvents', oldEvents)
+      },
+      deep: true
+    },
+    
   },
 
   computed: {
@@ -106,53 +118,16 @@ export default {
     cellWidth () {
       return 100 / (7 - this.weekDays.reduce((total, day) => total + day.hide, 0))
     },
-    events () {
-      const { startDate: cellStart, endDate: cellEnd } = this.data[0]
-      let events = []
-
-      // Calculate events on month/week/day views or years/year if eventsCountOnYearView.
-      if (!(['years', 'year'].includes(this.view.id) && !this.options.eventsCountOnYearView)) {
-        // Means that when vuecal.view.events changes all the cells will be looking up new value. :/
-        // Also clone array to prevent modifying original.
-        events = this.view.events.slice(0)
-
-        if (this.view.id === 'month') {
-          events.push(...this.view.outOfScopeEvents)
-        }
-
-        // Only keep events in cell time range.
-        events = events.filter(e => this.utils.event.eventInRange(e, cellStart, cellEnd))
-
-        if (this.options.showAllDayEvents && this.view.id !== 'month') events = events.filter(e => !!e.allDay === this.allDay)
-
-        // From events in view, filter the ones that are out of `time-from`-`time-to` range in this cell.
-        if (this.options.time && this.isWeekOrDayView && !this.allDay) {
-          const { timeFrom, timeTo } = this.options
-
-          events = events.filter(e => {
-            const segment = (e.daysCount > 1 && e.segments[this.data.formattedDate]) || {}
-            const singleDayInRange = e.daysCount === 1 && e.startTimeMinutes < timeTo && e.endTimeMinutes > timeFrom
-            const multipleDayInRange = e.daysCount > 1 && (segment.startTimeMinutes < timeTo && segment.endTimeMinutes > timeFrom)
-            const recurrMultDayInRange = false // e.daysCount > 1 && e.repeat && recurringEventInRange(e, cellStart, cellEnd)
-            return (e.allDay || singleDayInRange || multipleDayInRange || recurrMultDayInRange)
-          })
-        }
-
-        // Position events with time in the timeline when there is a timeline and not in allDay slot.
-        if (this.options.time && this.isWeekOrDayView && !(this.options.showAllDayEvents && this.allDay)) {
-          // Sort events in chronological order.
-          events.sort((a, b) => a.start < b.start ? -1 : 1)
-        }
-
-        // If splits, checkCellOverlappingEvents() is called from within computed splits.
-        if (!this.cellSplits.length) this.$nextTick(this.checkCellOverlappingEvents)
-      }
-
-      return events
-    },
     weekdayCellStyles () {
+      if(!this.vuecal.headingsWidthArray) return []
       let width = 0
-      console.log(this.data)
+
+      let headingsWidthArray = []
+      console.log(this.headings)
+      this.headings.forEach(heading => {
+        headingsWidthArray[heading.date] = this.vuecal.headingsWidthArray[heading.date]
+      });
+      console.log('headings',headingsWidthArray)
       // const [overlaps, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
       // const parsedOverlaps = Object.values(overlaps).sort((a, b) => a.position - b.position).reduce((obj, item) => {
       //   obj[item.id] ? obj[item.position].elements.push(...item.elements) : (obj[item.position] = { ...item });
@@ -167,6 +142,7 @@ export default {
       // if(overlappedEventsMaxNumber > 0) {
       //   width = (100 * overlappedEventsMaxNumber) 
       // }
+      return  headingsWidthArray
       // return {
       //   // ...(this.vuecal.hideWeekdays.length ? { width: `500px` } :  { width: `500px` })
       //   ...(this.vuecal.hideWeekdays.length ? { width: `${this.vuecal.hideWeekdays.length}%` } : width ? { width: `${width}px` } :{ })

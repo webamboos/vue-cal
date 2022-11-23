@@ -60,7 +60,7 @@
               .vuecal__flex.vuecal__week-number-cell(v-for="i in 6" :key="i" grow)
                 slot(name="week-number-cell" :week="getWeekNumber(i - 1)") {{ getWeekNumber(i - 1) }}
             .vuecal__flex.vuecal__cells(
-              :class="`${view.id}-view`"
+              :class="`${view.id}-view syncro-scroll`  "
               grow
               :wrap="!cellOrSplitMinWidth || !isWeekView"
               :column="!!cellOrSplitMinWidth")
@@ -70,7 +70,6 @@
                 :transition-direction="transitionDirection"
                 :week-days="weekDays"
                 :switch-to-narrower-view="switchToNarrowerView"
-                :data="viewCells[0]"
                 :style="cellOrSplitMinWidth ? `min-width: ${cellOrSplitMinWidth}px` : ''")
                 template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
                   slot(name="weekday-heading" :heading="heading" :view="view")
@@ -108,7 +107,9 @@
                   :cell-width="hideWeekdays.length && (isWeekView || isMonthView) && cellWidth"
                   :min-timestamp="minTimestamp"
                   :max-timestamp="maxTimestamp"
-                  :cell-splits="hasSplits && daySplits || []")
+                  :cell-splits="hasSplits && daySplits || []"
+                  @onCellWidthStyle="cellWidthStyle"
+                  )
                   template(#cell-content="{ events, split, selectCell }")
                     slot(name="cell-content" :cell="cell" :view="view" :go-narrower="selectCell" :events="events")
                       .split-label(v-if="split && !stickySplitLabels" v-html="split.label")
@@ -140,7 +141,7 @@
       div
 </template>
 
-<script lang='js'>
+<script lang="js">
 import { defineComponent } from 'vue'
 import DateUtils from './utils/date'
 import CellUtils from './utils/cell'
@@ -198,7 +199,8 @@ export default defineComponent({
       editEvents: this.editEvents,
       // Objects.
       view: this.view,
-      domEvents: this.domEvents
+      domEvents: this.domEvents,
+      headingsWidthArray: []
     }
   },
 
@@ -256,7 +258,8 @@ export default defineComponent({
     watchRealTime: { type: Boolean, default: false }, // Expensive, so only trigger on demand.
     xsmall: { type: Boolean, default: false },
     xDaysStart: { type: Date, default: undefined },
-    xDaysInterval: { type: Number, default: 7 }
+    xDaysInterval: { type: Number, default: 7 },
+    headingsWidthArray: { type: String, default: [] }
   },
 
   data() {
@@ -378,6 +381,11 @@ export default defineComponent({
             this.utils.date.updateTexts(this.texts)
           })
       }
+    },
+
+
+    cellWidthStyle(value) {
+      this.headingsWidthArray[value.date] = value.width
     },
 
     /**
@@ -1305,6 +1313,28 @@ export default defineComponent({
 
     this.$emit('ready', params)
     this.ready = true
+
+
+    window.addEventListener('scroll', function (e) {
+      console.log('Scroll event');
+      console.log(e.currentTarget)
+    });
+
+    // window.addEventListener('scroll', (e) => {
+    //   console.log(e.scrollY)
+    //   const scrollerDivs = document.querySelectorAll('.syncro-scroll');
+
+    //   scrollerDivs.forEach(function (element, index, array) {
+    //     element.scrollLeft = e.scrollY;
+    //   });
+
+
+    //   // your code
+    // })
+
+
+
+
   },
 
   beforeUnmount() {
@@ -1438,8 +1468,11 @@ export default defineComponent({
       weekDays = weekDays.slice(0).map((day, i) => ({
         label: day,
         ...(weekDaysShort.length ? { short: weekDaysShort[i] } : {}),
-        hide: (this.hideWeekends && i >= 5) || (this.hideWeekdays.length && this.hideWeekdays.includes(i + 1))
+        hide: (this.hideWeekends && i >= 5) || (this.hideWeekdays.length && this.hideWeekdays.includes(i + 1)),
+        width: "test"
       }))
+
+
 
       if (this.startWeekOnSunday) weekDays.unshift(weekDays.pop())
 
@@ -1668,6 +1701,7 @@ export default defineComponent({
               today: !todayFound && ud.isToday(startDate) && !todayFound++,
               // TODO: Probably needs refactoring, but we don't use this yet.
               specialHours: this.specialDayHours[dayOfWeek] || []
+
             }
           }).filter((cell, i) => !weekDays[i].hide)
           break

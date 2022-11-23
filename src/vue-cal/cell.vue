@@ -436,12 +436,14 @@ export default {
 
       if(overlappedEventsMaxNumber > 0) {
         width = (100 * overlappedEventsMaxNumber)
+        
       }
-      console.log(this.view.id)
+      console.log(this.data.startDate.getDate())
+      this.$emit('onCellWidthStyle', { date: this.data.startDate,width:this.cellWidth  ? { 'min-width': `${this.cellWidth}%` } : width ? { 'min-width': `${width}px` } :{ 'min-width': `${this.vuecal.minCellWidth ? this.vuecal.minCellWidth  : '320'}px`}})
 
       return {
         // cellWidth is only applied when hiding weekdays on month and week views.
-        ...(this.cellWidth  ? { width: `${this.cellWidth}%` } : width ? { width: `${width}px` } :{ })
+        ...(this.cellWidth  ? { 'min-width': `${this.cellWidth}%` } : width ? { 'min-width': `${width}px` } :{ 'min-width': `${this.vuecal.minCellWidth ? this.vuecal.minCellWidth  : '320'}px`}),
       }
     },
     timelineVisible () {
