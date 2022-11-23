@@ -423,27 +423,25 @@ export default {
     cellStyles () {
 
       let width = 0
-      const [overlaps, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
-      const parsedOverlaps = Object.values(overlaps).sort((a, b) => a.position - b.position).reduce((obj, item) => {
-        obj[item.id] ? obj[item.position].elements.push(...item.elements) : (obj[item.position] = { ...item });
-        return obj;
-      }, {})
+      const [, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
 
+      width = (100 * streak)
 
-      const overlappedEventsNumberArray = Object.values(parsedOverlaps).map(item => item?.overlaps?.length || 0)
+      const minWidth = 320
+      // const minWidth = this.cellWidth
+      //   ? { 'min-width': `${this.cellWidth}%` }
+      //   : width
+      //     ? { 'min-width': `${width}px` }
+      //     : { 'min-width': `${this.vuecal.minCellWidth ? this.vuecal.minCellWidth : 320}px` }
 
-      const overlappedEventsMaxNumber = overlappedEventsNumberArray?.length ? Math.max(...overlappedEventsNumberArray) : 0
-
-      if(overlappedEventsMaxNumber > 0) {
-        width = (100 * overlappedEventsMaxNumber)
-        
-      }
-      console.log(this.data.startDate.getDate())
-      this.$emit('onCellWidthStyle', { date: this.data.startDate,width:this.cellWidth  ? { 'min-width': `${this.cellWidth}%` } : width ? { 'min-width': `${width}px` } :{ 'min-width': `${this.vuecal.minCellWidth ? this.vuecal.minCellWidth  : '320'}px`}})
+      this.$emit('onCellWidthStyle', {
+        date: this.data.startDate,
+        width: `${minWidth}px`
+      })
 
       return {
         // cellWidth is only applied when hiding weekdays on month and week views.
-        ...(this.cellWidth  ? { 'min-width': `${this.cellWidth}%` } : width ? { 'min-width': `${width}px` } :{ 'min-width': `${this.vuecal.minCellWidth ? this.vuecal.minCellWidth  : '320'}px`}),
+        ...(this.cellWidth || minWidth),
       }
     },
     timelineVisible () {

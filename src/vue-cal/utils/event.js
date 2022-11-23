@@ -334,8 +334,6 @@ export default class EventUtils {
         return this.eventInRange(event, e.start, e.end) && (e._eid !== event._eid)
       })
 
-      mostOverlaps = overlappingEvents.length > mostOverlaps ? overlappingEvents.length : mostOverlaps
-
       let done = false
       let position = 0
       while (!done) {
@@ -353,34 +351,10 @@ export default class EventUtils {
       }
     }
 
-    return [_cellOverlaps, mostOverlaps]
-  }
+    const sorted = Object.values(_cellOverlaps).sort((l, r) => r.position - l.position)
+    console.log({ sorted })
 
-  /**
-   * Overlaps streak is the longest horizontal set of simultaneous events.
-   * This is determining the width of each events in this streak.
-   * E.g. 3 overlapping events [1, 2, 3]; 1 overlaps 2 & 3; 2 & 3 don't overlap;
-   *      => streak = 2; each width = 50% not 33%.
-   *
-   * @param {Object} event The current event we are checking among all the events of the current cell.
-   * @param {Object} cellOverlaps An indexed array of all the events overlaps for the current cell.
-   * @return {Number} The number of simultaneous event for this event.
-   */
-  getOverlapsStreak(event, cellOverlaps = {}) {
-    let streak = event.overlaps.length + 1
-    let removeFromStreak = []
-    event.overlaps.forEach(id => {
-      if (!removeFromStreak.includes(id)) {
-        const overlapsWithoutSelf = event.overlaps.filter(id2 => id2 !== id)
-        overlapsWithoutSelf.forEach(id3 => {
-          if (!cellOverlaps[id3].overlaps.includes(id)) removeFromStreak.push(id3)
-        })
-      }
-    })
-
-    removeFromStreak = [...new Set(removeFromStreak)] // Dedupe, most performant way.
-    streak -= removeFromStreak.length
-    return streak
+    return [_cellOverlaps, sorted[0]?.position || 1]
   }
 
   /**
