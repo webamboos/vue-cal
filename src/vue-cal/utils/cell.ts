@@ -11,8 +11,9 @@ const minutesInADay = 24 * 60
 export default class CellUtils {
   _vuecal = null
 
-  constructor (vuecal) {
+  constructor (vuecal,dateUtils,eventUtils) {
     this._vuecal = vuecal
+
   }
 
   /**

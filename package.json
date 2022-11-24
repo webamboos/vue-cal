@@ -1,6 +1,6 @@
 {
   "name": "@webamboos/vue-cal",
-  "version": "4.9.2",
+  "version": "4.9.5",
   "description": "A fork of vue-cal by Antoni Andre.",
   "author": "Arpad Gabor <arpad.gabor@webamboos.com>",
   "homepage": "https://github.com/webamboos/vue-cal",
@@ -39,7 +39,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build-bundle": "BUNDLE=true vite build && mv ./dist/style.css ./dist/vuecal.css && rm ./dist/favicon.ico",
+    "build": "BUNDLE=true vite build && mv ./dist/style.css ./dist/vuecal.css && rm ./dist/favicon.ico",
     "serve": "vite preview docs --base /vue-cal/",
     "lint": "vite lint"
   },

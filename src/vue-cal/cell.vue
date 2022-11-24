@@ -3,13 +3,13 @@ transition-group.vuecal__cell(
   :class="cellClasses"
   :name="`slide-fade--${transitionDirection}`"
   tag="div"
-  :appear="options.transitions"
-  :style="cellStyles")
+  :appear="options.transitions")
   .vuecal__flex.vuecal__cell-content(
     v-for="(split, i) in (splitsCount ? splits : 1)"
     :key="options.transitions ? `${view.id}-${data.content}-${i}` : i"
     :class="splitsCount && splitClasses(split)"
     :data-split="splitsCount ? split.id : false"
+    :style="view.id !== 'day'? cellStyles :'width:100%'"
     column
     tabindex="0"
     :aria-label="data.content"
@@ -62,6 +62,7 @@ transition-group.vuecal__cell(
 
 <script>
 import Event from './event.vue'
+import CellWidthUtils from './utils/cellWidth'
 
 export default {
   inject: ['vuecal', 'utils', 'modules', 'view', 'domEvents'],
@@ -69,8 +70,8 @@ export default {
   props: {
     // Vue-cal main component options (props).
     options: { type: Object, default: () => ({}) },
-    editEvents: { type: Object, required: true },
     data: { type: Object, required: true },
+    editEvents: { type: Object, required: true },
     cellSplits: { type: Array, default: () => [] },
     minTimestamp: { type: [Number, null], default: null },
     maxTimestamp: { type: [Number, null], default: null },
@@ -420,10 +421,26 @@ export default {
         'vuecal__cell--has-events': this.eventsCount
       }
     },
-    cellStyles () {
+    cellWidthStyle(){
+      const streak = this.splitsCount ? this.splits.overlapsStreak : this.cellOverlapsStreak
+      
+      const minWidth = this.vuecal.minEventWidth * streak
+      const minWidthProp = {'min-width': `${minWidth}px`}
+
+      CellWidthUtils.setHeadingsWidth({
+        date: this.data.startDate,
+        width: minWidthProp
+      })
+
       return {
         // cellWidth is only applied when hiding weekdays on month and week views.
-        ...(this.cellWidth ? { width: `${this.cellWidth}%` } : {})
+        ...minWidthProp,
+      }
+      
+    },
+    cellStyles () {
+      return {
+        ...this.cellWidthStyle
       }
     },
     timelineVisible () {
@@ -459,8 +476,10 @@ export default {
   .vuecal__cells.month-view &,
   .vuecal__cells.xdays-view &,
   .vuecal__cells.week-view & {
-    width: 14.2857%;
+    width: 100%;
   }
+
+
 
   .vuecal--hide-weekends .vuecal__cells.month-view &,
   .vuecal--hide-weekends .vuecal__cells.xdays-view &,
@@ -524,6 +543,7 @@ export default {
     width: 100%;
     height: 100%;
     outline: none;
+    min-width: 200px;
 
     .vuecal--years-view &,
     .vuecal--year-view &,
