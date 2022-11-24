@@ -54,14 +54,11 @@ export default {
     }),
   },
 
-  mounted() {
+  created() {
     this.headWidth = CellWidthUtils;
   },
 
   computed: {
-    computedHeadingsWidth() {
-      return this.headWidth.headingsWidth;
-    },
     headings() {
       let todayFound = false;
 
