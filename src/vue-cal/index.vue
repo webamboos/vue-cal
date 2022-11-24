@@ -70,7 +70,6 @@
                 :transition-direction="transitionDirection"
                 :week-days="weekDays"
                 :switch-to-narrower-view="switchToNarrowerView"
-                :headings-width="computedheadingsWidthArray"
                 :style="cellOrSplitMinWidth ? `min-width: ${cellOrSplitMinWidth}px` : ''")
                 template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
                   slot(name="weekday-heading" :heading="heading" :view="view")
@@ -108,9 +107,7 @@
                   :cell-width="hideWeekdays.length && (isWeekView || isMonthView) && cellWidth"
                   :min-timestamp="minTimestamp"
                   :max-timestamp="maxTimestamp"
-                  :headings-width="headingsWidthArray"
                   :cell-splits="hasSplits && daySplits || []"
-                  @onCellWidthStyle="cellWidthStyle"
                   )
                   template(#cell-content="{ events, split, selectCell }")
                     slot(name="cell-content" :cell="cell" :view="view" :go-narrower="selectCell" :events="events")
@@ -202,7 +199,6 @@ export default defineComponent({
       // Objects.
       view: this.view,
       domEvents: this.domEvents,
-      headingsWidthArray: []
     }
   },
 
@@ -261,7 +257,6 @@ export default defineComponent({
     xsmall: { type: Boolean, default: false },
     xDaysStart: { type: Date, default: undefined },
     xDaysInterval: { type: Number, default: 7 },
-    headingsWidthArray: { type: String, default: [] },
     minEventWidth: { type: Number, default: 320  },
   },
 
@@ -357,7 +352,6 @@ export default defineComponent({
       mutableEvents: [],
       // Transition when switching view. left when going toward the past, right when going toward future.
       transitionDirection: 'right',
-      headingsWidthArrayT:[]
     }
   },
 
@@ -388,14 +382,7 @@ export default defineComponent({
     },
 
 
-    cellWidthStyle(value) {
-      this.headingsWidthArray[value.date] = value.width
-      this.headingsWidthArrayT[value.date]= {...this.headingsWidthArray[value.date]}
-      this.headingsWidthArrayT = [...this.headingsWidthArrayT]
-
-    },
-
-    /**
+      /**
      * Only import drag and drop module on demand to keep a small library weight.
      */
     loadDragAndDrop() {

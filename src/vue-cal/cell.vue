@@ -62,6 +62,7 @@ transition-group.vuecal__cell(
 
 <script>
 import Event from './event.vue'
+import CellWidthUtils from './utils/cellWidth'
 
 export default {
   inject: ['vuecal', 'utils', 'modules', 'view', 'domEvents'],
@@ -426,7 +427,7 @@ export default {
       const minWidth = this.vuecal.minEventWidth * streak
       const minWidthProp = {'min-width': `${minWidth}px`}
 
-      this.$emit('onCellWidthStyle', {
+      CellWidthUtils.setHeadingsWidth({
         date: this.data.startDate,
         width: minWidthProp
       })

@@ -1,11 +1,12 @@
 <template lang="pug">
 //- weekdays-headings are on week view only.
+div
 .vuecal__flex.vuecal__weekdays-headings.syncro-scroll
   template(v-for="(heading, i) in headings" :key="i")
     .vuecal__flex.vuecal__heading(
-      v-if="!heading.hide"
+      v-if="!heading.hide && headWidth?.headingsWidth?.[heading.date]"
       :class="{ today: heading.today, clickable: cellHeadingsClickable }"
-      :style="weekdayCellStyles[heading.date]"
+      :style="headWidth?.headingsWidth?.[heading.date]"
       @click="['week', 'xdays'].includes(view.id) && selectCell(heading.date, $event)"
       @dblclick="['week', 'xdays'].includes(view.id) && vuecal.dblclickToNavigate && switchToNarrowerView()")
       transition(:name="`slide-fade--${transitionDirection}`" :appear="vuecal.transitions")
@@ -25,6 +26,7 @@
 </template>
 
 <script>
+import CellWidthUtils from "./utils/cellWidth";
 export default {
   inject: ["vuecal", "utils", "modules", "view", "domEvents"],
   props: {
@@ -34,6 +36,9 @@ export default {
     data: { type: Object, required: true },
     headingsWidth: { type: Array, default: () => [] },
   },
+  data: () => ({
+    headWidth: [],
+  }),
 
   methods: {
     selectCell(date, DOMEvent) {
@@ -49,19 +54,13 @@ export default {
     }),
   },
 
-  watch: {
-    headingsWidth: {
-      handler(events, oldEvents) {
-        console.log("vuecal changed", events, oldEvents);
-      },
-      deep: true,
-    },
+  mounted() {
+    this.headWidth = CellWidthUtils;
   },
 
   computed: {
     computedHeadingsWidth() {
-      console.log("computedHeadingsWidth", this.vuecal.headingsWidthArray);
-      return this.vuecal.headingsWidthArray;
+      return this.headWidth.headingsWidth;
     },
     headings() {
       let todayFound = false;
@@ -142,18 +141,7 @@ export default {
         100 / (7 - this.weekDays.reduce((total, day) => total + day.hide, 0))
       );
     },
-    weekdayCellStyles() {
-      if (!this.vuecal.headingsWidthArray) return [];
 
-      let headingsWidthArray = [];
-      console.log(this.headings);
-      this.headings.forEach((heading) => {
-        headingsWidthArray[heading.date] =
-          this.vuecal.headingsWidthArray[heading.date];
-      });
-      console.log("headings", headingsWidthArray);
-      return headingsWidthArray;
-    },
     cellHeadingsClickable() {
       return (
         this.view.id === "week" &&
