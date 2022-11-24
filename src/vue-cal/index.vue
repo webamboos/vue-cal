@@ -70,6 +70,7 @@
                 :transition-direction="transitionDirection"
                 :week-days="weekDays"
                 :switch-to-narrower-view="switchToNarrowerView"
+                :headings-width="computedheadingsWidthArray"
                 :style="cellOrSplitMinWidth ? `min-width: ${cellOrSplitMinWidth}px` : ''")
                 template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
                   slot(name="weekday-heading" :heading="heading" :view="view")
@@ -107,6 +108,7 @@
                   :cell-width="hideWeekdays.length && (isWeekView || isMonthView) && cellWidth"
                   :min-timestamp="minTimestamp"
                   :max-timestamp="maxTimestamp"
+                  :headings-width="headingsWidthArray"
                   :cell-splits="hasSplits && daySplits || []"
                   @onCellWidthStyle="cellWidthStyle"
                   )
@@ -259,7 +261,8 @@ export default defineComponent({
     xsmall: { type: Boolean, default: false },
     xDaysStart: { type: Date, default: undefined },
     xDaysInterval: { type: Number, default: 7 },
-    headingsWidthArray: { type: String, default: [] }
+    headingsWidthArray: { type: String, default: [] },
+    minEventWidth: { type: Number, default: 320  },
   },
 
   data() {
@@ -353,7 +356,8 @@ export default defineComponent({
       // An array of mutable events updated each time given external events array changes.
       mutableEvents: [],
       // Transition when switching view. left when going toward the past, right when going toward future.
-      transitionDirection: 'right'
+      transitionDirection: 'right',
+      headingsWidthArrayT:[]
     }
   },
 
@@ -386,6 +390,9 @@ export default defineComponent({
 
     cellWidthStyle(value) {
       this.headingsWidthArray[value.date] = value.width
+      this.headingsWidthArrayT[value.date]= {...this.headingsWidthArray[value.date]}
+      this.headingsWidthArrayT = [...this.headingsWidthArrayT]
+
     },
 
     /**
@@ -1315,24 +1322,6 @@ export default defineComponent({
     this.ready = true
 
 
-    window.addEventListener('scroll', function (e) {
-      console.log('Scroll event');
-      console.log(e.currentTarget)
-    });
-
-    // window.addEventListener('scroll', (e) => {
-    //   console.log(e.scrollY)
-    //   const scrollerDivs = document.querySelectorAll('.syncro-scroll');
-
-    //   scrollerDivs.forEach(function (element, index, array) {
-    //     element.scrollLeft = e.scrollY;
-    //   });
-
-
-    //   // your code
-    // })
-
-
 
 
   },
@@ -1350,6 +1339,9 @@ export default defineComponent({
   },
 
   computed: {
+    computedheadingsWidthArray() {
+      return this.headingsWidthArrayT
+    },
     editEvents() {
       if (this.editableEvents && typeof this.editableEvents === 'object') {
         return {

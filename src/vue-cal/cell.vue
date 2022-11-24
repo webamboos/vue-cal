@@ -420,28 +420,26 @@ export default {
         'vuecal__cell--has-events': this.eventsCount
       }
     },
-    cellStyles () {
-
-      let width = 0
-      const [, streak] = this.utils.event.checkCellOverlappingEvents(this.events.filter(e => !e.background && !e.allDay), this.options)
-
-      width = (100 * streak)
-
-      const minWidth = 320
-      // const minWidth = this.cellWidth
-      //   ? { 'min-width': `${this.cellWidth}%` }
-      //   : width
-      //     ? { 'min-width': `${width}px` }
-      //     : { 'min-width': `${this.vuecal.minCellWidth ? this.vuecal.minCellWidth : 320}px` }
+    cellWidthStyle(){
+      const streak = this.splitsCount ? this.splits.overlapsStreak : this.cellOverlapsStreak
+      
+      const minWidth = this.vuecal.minEventWidth * streak
+      const minWidthProp = {'min-width': `${minWidth}px`}
 
       this.$emit('onCellWidthStyle', {
         date: this.data.startDate,
-        width: `${minWidth}px`
+        width: minWidthProp
       })
 
       return {
         // cellWidth is only applied when hiding weekdays on month and week views.
-        ...(this.cellWidth || minWidth),
+        ...minWidthProp,
+      }
+      
+    },
+    cellStyles () {
+      return {
+        ...this.cellWidthStyle
       }
     },
     timelineVisible () {
