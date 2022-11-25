@@ -220,7 +220,6 @@ export default {
     eventStyles () {
       if (this.event.allDay || !this.vuecal.time || !this.event.endTimeMinutes || this.view.id === 'month' || this.allDay) return {}
 
-
       let width = 100 / (this.overlapsStreak + 1)
       let left = width * this.eventPosition
 
