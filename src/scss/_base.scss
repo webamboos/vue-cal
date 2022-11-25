@@ -14,3 +14,14 @@ body {
   background-color: #fff !important;
   color: #2c3e50;
 }
+
+.month-view > .vuecal__flex {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+}
+
+.year-view > .vuecal__flex {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
