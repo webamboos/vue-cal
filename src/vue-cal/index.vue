@@ -25,7 +25,7 @@
       slot(name="title" :title="viewTitle" :view="view") {{ viewTitle }}
     template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
       slot(name="weekday-heading" :heading="heading" :view="view")
-    template(#split-label="{ split }" v-if="$slots['split-label']")
+    template(#split-label="{ split }")
       slot(name="split-label" :split="split" :view="view.id")
 
   .vuecal__flex.vuecal__body(v-if="!hideBody" grow)

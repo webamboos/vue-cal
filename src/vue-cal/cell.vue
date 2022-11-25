@@ -9,7 +9,7 @@ transition-group.vuecal__cell(
     :key="options.transitions ? `${view.id}-${data.content}-${i}` : i"
     :class="splitsCount && splitClasses(split)"
     :data-split="splitsCount ? split.id : false"
-    :style="view.id !== 'day'? cellStyles :'width:100%'"
+    :style="view.id !== 'month'? cellStyles :''"
     column
     tabindex="0"
     :aria-label="data.content"
@@ -425,7 +425,7 @@ export default {
       const streak = this.splitsCount ? this.splits.overlapsStreak : this.cellOverlapsStreak
       
       const minWidth = this.vuecal.minEventWidth * streak
-      const minWidthProp = {'min-width': `${minWidth}px`}
+      const minWidthProp = {'min-width': `${minWidth}px`,'width': `${minWidth}px`}
 
       CellWidthUtils.setHeadingsWidth({
         date: this.data.startDate,
