@@ -4,7 +4,7 @@ div
 .vuecal__flex.vuecal__weekdays-headings.syncro-scroll
   template(v-for="(heading, i) in headings" :key="i")
     .vuecal__flex.vuecal__heading(
-      v-if="!heading.hide && headWidth?.headingsWidth?.[heading.date]"
+      v-if="!heading.hide"
       :class="{ today: heading.today, clickable: cellHeadingsClickable }"
       :style="headWidth?.headingsWidth?.[heading.date]"
       @click="['week', 'xdays'].includes(view.id) && selectCell(heading.date, $event)"
