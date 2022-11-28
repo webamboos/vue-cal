@@ -483,11 +483,30 @@ const events  = [
 
 ];
 
+const split = [{
+        id: 1,
+        label: 'test',
+        class: 'split-size',
+        content: {
+          nrOfEvents: 10,
+        },
+      },
+      {
+        id: 2,
+        label: 'test2',
+        class: 'split-size',
+        content: {
+          nrOfEvents: 10,
+        },
+      }]
+
 const now = new Date();
 </script>
 
 <template>
   <div>
-    <VueCal :x-days-interval="7" :x-days-start="now" :active-view="'xdays'" :events="events" :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }" />
+    <VueCal :x-days-interval="7" :x-days-start="now"  :active-view="'day'" :events="events" :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }" >
+    
+    </VueCal>
   </div>
 </template>

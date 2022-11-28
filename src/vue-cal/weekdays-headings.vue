@@ -2,11 +2,12 @@
 //- weekdays-headings are on week view only.
 div
 .vuecal__flex.vuecal__weekdays-headings.syncro-scroll
+  
   template(v-for="(heading, i) in headings" :key="i")
     .vuecal__flex.vuecal__heading(
       v-if="!heading.hide"
       :class="{ today: heading.today, clickable: cellHeadingsClickable }"
-      :style="headWidth?.headingsWidth?.[heading.date]"
+      :style="vuecal.hasSplits ? {'min-width':headWidth?.headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj['min-width']?.replace('px','')) + total,0)+ 'px','width':headWidth?.headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj.width?.replace('px','')) + total,0)+ 'px'} :  headWidth?.headingsWidth?.[heading.date]" 
       @click="['week', 'xdays'].includes(view.id) && selectCell(heading.date, $event)"
       @dblclick="['week', 'xdays'].includes(view.id) && vuecal.dblclickToNavigate && switchToNarrowerView()")
       transition(:name="`slide-fade--${transitionDirection}`" :appear="vuecal.transitions")
@@ -54,7 +55,7 @@ export default {
     }),
   },
 
-  created() {
+  mounted() {
     this.headWidth = CellWidthUtils;
   },
 

@@ -353,6 +353,7 @@ export default class EventUtils {
 
     const sorted = Object.values(_cellOverlaps).sort((l, r) => r.position - l.position)
 
+
     return [_cellOverlaps, sorted[0]?.position || 1]
   }
 
