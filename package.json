@@ -12,6 +12,13 @@
   "unpkg": "dist/vue-cal.iife.js",
   "jsdelivr": "dist/vue-cal.iife.js",
   "module": "dist/vue-cal.es.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "BUNDLE=true vite build && mv ./dist/style.css ./dist/vuecal.css && rm ./dist/favicon.ico",
+    "serve": "vite preview docs --base /vue-cal/",
+    "lint": "vite lint",
+    "prepublishOnly": "pnpm build"
+  },
   "files": [
     "dist",
     "package.json",
@@ -38,12 +45,6 @@
     "vue 2",
     "ui"
   ],
-  "scripts": {
-    "dev": "vite",
-    "build": "BUNDLE=true vite build && mv ./dist/style.css ./dist/vuecal.css && rm ./dist/favicon.ico",
-    "serve": "vite preview docs --base /vue-cal/",
-    "lint": "vite lint"
-  },
   "devDependencies": {
     "@babel/core": "^7.19.6",
     "@babel/eslint-parser": "^7.19.1",
