@@ -4,10 +4,12 @@ specifiers:
   '@babel/core': ^7.19.6
   '@babel/eslint-parser': ^7.19.1
   '@babel/plugin-proposal-class-properties': ^7.18.6
+  '@types/lodash': ^4.14.190
   '@vitejs/plugin-vue': ^3.2.0
   '@vue/compiler-sfc': ^3.2.41
   autoprefixer: ^10.4.12
   eslint: ^8.26.0
+  lodash: ^4.17.21
   postcss: ^8.4.18
   pug: ^3.0.2
   rollup: ^3.2.3
@@ -19,10 +21,14 @@ specifiers:
   vue-router: ^4.1.5
   vue-tsc: ^1.0.9
 
+dependencies:
+  lodash: 4.17.21
+
 devDependencies:
   '@babel/core': 7.19.6
   '@babel/eslint-parser': 7.19.1_lz6pjk7mo2w5fzem2eded7dzpy
   '@babel/plugin-proposal-class-properties': 7.18.6_@babel+core@7.19.6
+  '@types/lodash': 4.14.190
   '@vitejs/plugin-vue': 3.2.0_vite@3.2.1+vue@3.2.41
   '@vue/compiler-sfc': 3.2.41
   autoprefixer: 10.4.13_postcss@8.4.18
@@ -450,6 +456,10 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
+    dev: true
+
+  /@types/lodash/4.14.190:
+    resolution: {integrity: sha512-5iJ3FBJBvQHQ8sFhEhJfjUP+G+LalhavTkYyrAYqz5MEJG+erSv0k9KJLb6q7++17Lafk1scaTIFXcMJlwK8Mw==}
     dev: true
 
   /@types/node/18.11.7:
@@ -1546,6 +1556,10 @@ packages:
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: false
 
   /magic-string/0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}

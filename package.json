@@ -6,7 +6,6 @@
   "homepage": "https://github.com/webamboos/vue-cal",
   "repository": "https://github.com/webamboos/vue-cal",
   "private": false,
-
   "license": "MIT",
   "main": "dist/vue-cal.cjs.js",
   "unpkg": "dist/vue-cal.iife.js",
@@ -49,6 +48,7 @@
     "@babel/core": "^7.19.6",
     "@babel/eslint-parser": "^7.19.1",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@types/lodash": "^4.14.190",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vue/compiler-sfc": "^3.2.41",
     "autoprefixer": "^10.4.12",
@@ -66,5 +66,8 @@
   },
   "peerDependencies": {
     "vue": "^3.2.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
