@@ -97,7 +97,7 @@
                 :ref="el => cellsEl = el"
                 grow
                 :wrap="!cellOrSplitMinWidth || !isWeekView"
-                :style="cellOrSplitMinWidth ? `min-width: ${cellOrSplitMinWidth}px` : ''")
+                :style="cellOrSplitMinWidth ? {'min-width': `${cellOrSplitMinWidth}px`,width: `${cellOrSplitMinWidth}px`} : ''")
                 vuecal-cell(
                   v-for="(cell, i) in viewCells"
                   :key="i"
