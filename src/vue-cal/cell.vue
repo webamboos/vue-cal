@@ -62,10 +62,9 @@ transition-group.vuecal__cell(
 
 <script>
 import Event from "./event.vue";
-import CellWidthUtils from "./utils/cellWidth";
 
 export default {
-  inject: ["vuecal", "utils", "modules", "view", "domEvents"],
+  inject: ["vuecal", "utils", "modules", "view", "domEvents", 'headingsWidth', 'setHeadingsWidth'],
   components: { Event },
   props: {
     // Vue-cal main component options (props).
@@ -503,7 +502,7 @@ export default {
             "min-width": `${minWidth}px`,
             width: `${minWidth}px`,
           });
-          CellWidthUtils.setHeadingsWidth({
+          this.setHeadingsWidth({
             date: this.data.startDate,
             width: cellsWidthArray,
             splits: this.splitsCount,
@@ -518,7 +517,7 @@ export default {
           width: `${minWidth}px`,
         };
 
-        CellWidthUtils.setHeadingsWidth({
+        this.setHeadingsWidth({
           date: this.data.startDate,
           width: minWidthProp,
           splits: this.splitsCount,

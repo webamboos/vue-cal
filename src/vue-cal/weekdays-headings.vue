@@ -7,7 +7,7 @@ div
     .vuecal__flex.vuecal__heading(
       v-if="!heading.hide"
       :class="{ today: heading.today, clickable: cellHeadingsClickable }"
-      :style="vuecal.hasSplits ? {'min-width':headWidth?.headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj['min-width']?.replace('px','')) + total,0)+ 'px','width':headWidth?.headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj.width?.replace('px','')) + total,0)+ 'px'} :  headWidth?.headingsWidth?.[heading.date]" 
+      :style="vuecal.hasSplits ? {'min-width':headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj['min-width']?.replace('px','')) + total,0)+ 'px','width':headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj.width?.replace('px','')) + total,0)+ 'px'} :  headingsWidth?.[heading.date]"
       @click="['week', 'xdays'].includes(view.id) && selectCell(heading.date, $event)"
       @dblclick="['week', 'xdays'].includes(view.id) && vuecal.dblclickToNavigate && switchToNarrowerView()")
       transition(:name="`slide-fade--${transitionDirection}`" :appear="vuecal.transitions")
@@ -27,15 +27,13 @@ div
 </template>
 
 <script>
-import CellWidthUtils from "./utils/cellWidth";
 export default {
-  inject: ["vuecal", "utils", "modules", "view", "domEvents"],
+  inject: ["vuecal", "utils", "modules", "view", "domEvents", 'headingsWidth', 'setHeadingsWidth'],
   props: {
     transitionDirection: { type: String, default: "right" },
     weekDays: { type: Array, default: () => [] },
     switchToNarrowerView: { type: Function, default: () => { } },
     data: { type: Object, required: true },
-    headingsWidth: { type: Array, default: () => [] },
   },
   // data: () => ({
   //   headWidth: [],
@@ -56,7 +54,7 @@ export default {
   },
 
   watch: {
-    CellWidthUtils: {
+    headingsWidth: {
       // To be able to detect an event attribute change, it has to be first initialized with a value.
       handler(events, oldEvents) {
         console.log("events", events)
@@ -70,9 +68,6 @@ export default {
 
 
 computed: {
-  headWidth() {
-    return CellWidthUtils;
-  },
   headings() {
     let todayFound = false;
 

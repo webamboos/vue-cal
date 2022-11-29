@@ -1,14 +1,16 @@
-export default {
+export const MinCellWidth = {
   data: {
     headingsWidth: [],
   },
-  setHeadingsWidth(value) {
-    this.headingsWidth = {
-      ...this.headingsWidth,
-      [value.date]: value.width,
-    };
-    return this.headingsWidth
-  }, 
+  methods: {
+    setHeadingsWidth(value) {
+      this.headingsWidth = {
+        ...this.headingsWidth,
+        [value.date]: value.width,
+      };
+      return this.headingsWidth
+    },
+  }
 };
 
 
