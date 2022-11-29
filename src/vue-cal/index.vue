@@ -150,7 +150,7 @@ import WeekdaysHeadings from './weekdays-headings.vue'
 import AllDayBar from './all-day-bar.vue'
 import Cell from './cell.vue'
 import './styles.scss'
-import { MinCellWidth } from "./utils/cellWidth";
+import { debounce } from 'lodash'
 
 const minutesInADay = 24 * 60 // Don't do the maths every time.
 const textsDefaults = {
@@ -182,89 +182,11 @@ const dateUtils = new DateUtils(textsDefaults) // Do this ASAP for date prototyp
 
 // @ts-ignore
 export default defineComponent({
-  mixins: [MinCellWidth],
   name: 'vue-cal',
   components: { 'vuecal-cell': Cell, 'vuecal-header': Header, WeekdaysHeadings, AllDayBar },
-
-  // By Vue design, passing props loses the reactivity unless it's a method or reactive OBJECT.
-  provide() {
-    return {
-      vuecal: this,
-      utils: this.utils,
-      modules: this.modules,
-      // Methods.
-      previous: this.previous,
-      next: this.next,
-      switchView: this.switchView,
-      updateSelectedDate: this.updateSelectedDate,
-      editEvents: this.editEvents,
-      // Objects.
-      view: this.view,
-      domEvents: this.domEvents,
-      headingsWidth: this.headingsWidth,
-      setHeadingsWidth: this.setHeadingsWidth
-    }
-  },
-
-  props: {
-    activeView: { type: String, default: 'week' },
-    allDayBarHeight: { type: [String, Number], default: '25px' },
-    cellClickHold: { type: Boolean, default: true },
-    cellContextmenu: { type: Boolean, default: false },
-    clickToNavigate: { type: Boolean, default: false },
-    dblclickToNavigate: { type: Boolean, default: true },
-    disableDatePrototypes: { type: Boolean, default: false },
-    disableDays: { type: Array, default: () => [] },
-    disableViews: { type: Array, default: () => [] },
-    dragToCreateEvent: { type: Boolean, default: true },
-    dragToCreateThreshold: { type: Number, default: 15 },
-    editableEvents: { type: [Boolean, Object], default: false },
-    events: { type: Array, default: () => [] },
-    eventsCountOnYearView: { type: Boolean, default: false },
-    eventsOnMonthView: { type: [Boolean, String], default: false },
-    hideBody: { type: Boolean, default: false },
-    hideTitleBar: { type: Boolean, default: false },
-    hideViewSelector: { type: Boolean, default: false },
-    hideWeekdays: { type: Array, default: () => [] },
-    hideWeekends: { type: Boolean, default: false },
-    locale: { type: [String, Object], default: 'en' },
-    maxDate: { type: [String, Date], default: '' },
-    minCellWidth: { type: Number, default: 0 },
-    minDate: { type: [String, Date], default: '' },
-    minSplitWidth: { type: Number, default: 0 },
-    onEventClick: { type: [Function, null], default: null },
-    onEventCreate: { type: [Function, null], default: null },
-    onEventDblclick: { type: [Function, null], default: null },
-    overlapsPerTimeStep: { type: Boolean, default: false },
-    resizeX: { type: Boolean, default: false },
-    selectedDate: { type: [String, Date], default: '' },
-    showAllDayEvents: { type: [Boolean, String], default: false },
-    showTimeInCells: { type: Boolean, default: false },
-    showWeekNumbers: { type: [Boolean, String], default: false },
-    snapToTime: { type: Number, default: 0 },
-    small: { type: Boolean, default: false },
-    specialHours: { type: Object, default: () => ({}) },
-    splitDays: { type: Array, default: () => [] },
-    startWeekOnSunday: { type: Boolean, default: false },
-    stickySplitLabels: { type: Boolean, default: false },
-    time: { type: Boolean, default: true },
-    timeCellHeight: { type: Number, default: 40 }, // In pixels.
-    timeFormat: { type: String, default: '' },
-    timeFrom: { type: Number, default: 0 }, // In minutes.
-    timeStep: { type: Number, default: 60 }, // In minutes.
-    timeTo: { type: Number, default: minutesInADay }, // In minutes.
-    todayButton: { type: Boolean, default: false },
-    transitions: { type: Boolean, default: true },
-    twelveHour: { type: Boolean, default: false },
-    watchRealTime: { type: Boolean, default: false }, // Expensive, so only trigger on demand.
-    xsmall: { type: Boolean, default: false },
-    xDaysStart: { type: Date, default: undefined },
-    xDaysInterval: { type: Number, default: 7 },
-    minEventWidth: { type: Number, default: 320  },
-  },
-
   data() {
     return {
+      headingsWidth: [],
       ready: false, // Is vue-cal ready.
       // Make texts reactive before a locale is loaded.
       texts: { ...textsDefaults },
@@ -357,8 +279,98 @@ export default defineComponent({
       transitionDirection: 'right',
     }
   },
+  // By Vue design, passing props loses the reactivity unless it's a method or reactive OBJECT.
+  provide() {
+    return {
+      vuecal: this,
+      utils: this.utils,
+      modules: this.modules,
+      // Methods.
+      previous: this.previous,
+      next: this.next,
+      switchView: this.switchView,
+      updateSelectedDate: this.updateSelectedDate,
+      editEvents: this.editEvents,
+      // Objects.
+      view: this.view,
+      domEvents: this.domEvents,
+      headingsWidth: this.headingsWidth,
+      setHeadingsWidth: this.setHeadingsWidth
+    }
+  },
+
+  props: {
+    activeView: { type: String, default: 'week' },
+    allDayBarHeight: { type: [String, Number], default: '25px' },
+    cellClickHold: { type: Boolean, default: true },
+    cellContextmenu: { type: Boolean, default: false },
+    clickToNavigate: { type: Boolean, default: false },
+    dblclickToNavigate: { type: Boolean, default: true },
+    disableDatePrototypes: { type: Boolean, default: false },
+    disableDays: { type: Array, default: () => [] },
+    disableViews: { type: Array, default: () => [] },
+    dragToCreateEvent: { type: Boolean, default: true },
+    dragToCreateThreshold: { type: Number, default: 15 },
+    editableEvents: { type: [Boolean, Object], default: false },
+    events: { type: Array, default: () => [] },
+    eventsCountOnYearView: { type: Boolean, default: false },
+    eventsOnMonthView: { type: [Boolean, String], default: false },
+    hideBody: { type: Boolean, default: false },
+    hideTitleBar: { type: Boolean, default: false },
+    hideViewSelector: { type: Boolean, default: false },
+    hideWeekdays: { type: Array, default: () => [] },
+    hideWeekends: { type: Boolean, default: false },
+    locale: { type: [String, Object], default: 'en' },
+    maxDate: { type: [String, Date], default: '' },
+    minCellWidth: { type: Number, default: 0 },
+    minDate: { type: [String, Date], default: '' },
+    minSplitWidth: { type: Number, default: 0 },
+    onEventClick: { type: [Function, null], default: null },
+    onEventCreate: { type: [Function, null], default: null },
+    onEventDblclick: { type: [Function, null], default: null },
+    overlapsPerTimeStep: { type: Boolean, default: false },
+    resizeX: { type: Boolean, default: false },
+    selectedDate: { type: [String, Date], default: '' },
+    showAllDayEvents: { type: [Boolean, String], default: false },
+    showTimeInCells: { type: Boolean, default: false },
+    showWeekNumbers: { type: [Boolean, String], default: false },
+    snapToTime: { type: Number, default: 0 },
+    small: { type: Boolean, default: false },
+    specialHours: { type: Object, default: () => ({}) },
+    splitDays: { type: Array, default: () => [] },
+    startWeekOnSunday: { type: Boolean, default: false },
+    stickySplitLabels: { type: Boolean, default: false },
+    time: { type: Boolean, default: true },
+    timeCellHeight: { type: Number, default: 40 }, // In pixels.
+    timeFormat: { type: String, default: '' },
+    timeFrom: { type: Number, default: 0 }, // In minutes.
+    timeStep: { type: Number, default: 60 }, // In minutes.
+    timeTo: { type: Number, default: minutesInADay }, // In minutes.
+    todayButton: { type: Boolean, default: false },
+    transitions: { type: Boolean, default: true },
+    twelveHour: { type: Boolean, default: false },
+    watchRealTime: { type: Boolean, default: false }, // Expensive, so only trigger on demand.
+    xsmall: { type: Boolean, default: false },
+    xDaysStart: { type: Date, default: undefined },
+    xDaysInterval: { type: Number, default: 7 },
+    minEventWidth: { type: Number, default: 320  },
+  },
+
+
 
   methods: {
+    setDebounced: debounce(function (value) {
+      console.log(value)
+      this.headingsWidth = {
+        ...this.headingsWidth,
+        [value.date]: value.width,
+      };
+      return this.headingsWidth
+    }, 50),
+
+    setHeadingsWidth(value) {
+      this.setDebounced(value)
+    },
     /**
      * Only import locale on demand to keep a small library weight.
      *
