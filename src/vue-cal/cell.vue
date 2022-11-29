@@ -115,7 +115,6 @@ export default {
 
     checkCellOverlappingEvents() {
       // If splits, checkCellOverlappingEvents() is called from within computed splits.
-      console.log(this.events.length)
       if (this.options.time && this.eventsCount && !this.splitsCount) {
         if (this.eventsCount === 1) {
           this.cellOverlaps = [];
@@ -123,12 +122,11 @@ export default {
         }
         // If only 1 event remains re-init the overlaps.
         else
-          [this.cellOverlaps,this.cellOverlapsStreak] =
+          [this.cellOverlaps, this.cellOverlapsStreak] =
             this.utils.event.checkCellOverlappingEvents(
               this.events,
               this.options
             );
-            this.cellOverlapsStreak =  this.events.length <= 1 ? this.cellOverlapsStreak : this.cellOverlapsStreak + 1
       }
     },
 
@@ -500,7 +498,7 @@ export default {
         this.splits.map((o) => {
           const streak = o.overlapsStreak;
 
-          const minWidth =  this.vuecal.minEventWidth* streak;
+          const minWidth = this.vuecal.minEventWidth * streak;
           cellsWidthArray.push({
             "min-width": `${minWidth}px`,
             width: `${minWidth}px`,
