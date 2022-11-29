@@ -275,9 +275,6 @@ export default {
         height: `${height}px`,
         width: `${width}%`,
         left: (this.event.left && `${this.event.left}%`) || `${left}%`,
-        "z-index": Math.round(
-          ((this.event.left && this.event.left) || left) + top
-        ),
       };
     },
 
