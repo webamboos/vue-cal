@@ -150,6 +150,7 @@ import WeekdaysHeadings from './weekdays-headings.vue'
 import AllDayBar from './all-day-bar.vue'
 import Cell from './cell.vue'
 import './styles.scss'
+import CellWidthUtils from "./utils/cellWidth";
 
 const minutesInADay = 24 * 60 // Don't do the maths every time.
 const textsDefaults = {
@@ -257,6 +258,7 @@ export default defineComponent({
     xDaysStart: { type: Date, default: undefined },
     xDaysInterval: { type: Number, default: 7 },
     minEventWidth: { type: Number, default: 320  },
+    testChestie: { type: Array, default: () => CellWidthUtils},
   },
 
   data() {

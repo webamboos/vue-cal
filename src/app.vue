@@ -393,89 +393,89 @@ const events  = [
 //     content: '<i class="icon material-icons">cake</i>',
 //     class: "sport",
 //   },
-//   {
-//     start: "2022-11-25 05:30:00",
-//     end: "2022-11-25 06:30:00",
-//     title: "54 Dad's birthday!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-//   {
-//     start: "2022-11-25 06:00:00",
-//     end: "2022-11-25 16:30:00",
-//     title: "55 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-//   {
-//     start: "2022-11-25 06:00:00",
-//     end: "2022-11-25 07:00:00",
-//     title: "56 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-//   {
-//     start: "2022-11-25 06:00:00",
-//     end: "2022-11-25 07:00:00",
-//     title: "57 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-//   {
-//     start: "2022-11-25 06:00:00",
-//     end: "2022-11-25 07:00:00",
-//     title: "58 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-//   {
-//     start: "2022-11-25 06:15:00",
-//     end: "2022-11-25 07:15:00",
-//     title: "59 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-//   {
-//     start: "2022-11-25 07:00:00",
-//     end: "2022-11-25 08:00:00",
-//     title: "60 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-//   {
-//     start: "2022-11-25 07:15:00",
-//     end: "2022-11-25 08:15:00",
-//     title: "61 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-
-//   {
-//     start: "2022-11-25 08:15:00",
-//     end: "2022-11-25 12:15:00",
-//     title: "62 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-
-//   {
-//     start: "2022-11-25 12:15:00",
-//     end: "2022-11-25 14:15:00",
-//     title: "63 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
-
-//   {
-//     start: "2022-11-25 10:30:00",
-//     end: "2022-11-25 11:00:00",
-//     title: "64 Dad's birthday 2!",
-//     content: '<i class="icon material-icons">cake</i>',
-//     class: "sport",
-//   },
   {
-    start: "2022-11-25 10:30:00",
-    end: "2022-11-25 11:00:00",
+    start: "2022-11-29 05:30:00",
+    end: "2022-11-29 06:30:00",
+    title: "54 Dad's birthday!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+  {
+    start: "2022-11-29 06:00:00",
+    end: "2022-11-29 16:30:00",
+    title: "55 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+  {
+    start: "2022-11-29 06:00:00",
+    end: "2022-11-29 07:00:00",
+    title: "56 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+  {
+    start: "2022-11-29 06:00:00",
+    end: "2022-11-29 07:00:00",
+    title: "57 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+  {
+    start: "2022-11-29 06:00:00",
+    end: "2022-11-29 07:00:00",
+    title: "58 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+  {
+    start: "2022-11-29 06:15:00",
+    end: "2022-11-29 07:15:00",
+    title: "59 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+  {
+    start: "2022-11-29 07:00:00",
+    end: "2022-11-29 08:00:00",
+    title: "60 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+  {
+    start: "2022-11-29 07:15:00",
+    end: "2022-11-29 08:15:00",
+    title: "61 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+
+  {
+    start: "2022-11-29 08:15:00",
+    end: "2022-11-29 12:15:00",
+    title: "62 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+
+  {
+    start: "2022-11-29 12:15:00",
+    end: "2022-11-29 14:15:00",
+    title: "63 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+
+  {
+    start: "2022-11-29 10:30:00",
+    end: "2022-11-29 11:00:00",
+    title: "64 Dad's birthday 2!",
+    content: '<i class="icon material-icons">cake</i>',
+    class: "sport",
+  },
+  {
+    start: "2022-11-29 10:30:00",
+    end: "2022-11-29 11:00:00",
     title: "65 Dad's birthday 2!",
     content: '<i class="icon material-icons">cake</i>',
     class: "sport",
@@ -505,7 +505,7 @@ const now = new Date();
 
 <template>
   <div>
-    <VueCal :x-days-interval="7" :x-days-start="now"  :active-view="'day'" :events="events" :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }" >
+    <VueCal :x-days-interval="7" :x-days-start="now"  :active-view="'xdays'" :events="events" :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }" >
     
     </VueCal>
   </div>
