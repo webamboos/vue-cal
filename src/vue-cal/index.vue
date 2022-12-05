@@ -70,7 +70,6 @@
                 :transition-direction="transitionDirection"
                 :week-days="weekDays"
                 :switch-to-narrower-view="switchToNarrowerView"
-                :headings-width="computedheadingsWidthArray"
                 :style="cellOrSplitMinWidth ? `min-width: ${cellOrSplitMinWidth}px` : ''")
                 template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
                   slot(name="weekday-heading" :heading="heading" :view="view")
@@ -1341,9 +1340,6 @@ export default defineComponent({
   },
 
   computed: {
-    computedheadingsWidthArray() {
-      return this.headingsWidth
-    },
     editEvents() {
       if (this.editableEvents && typeof this.editableEvents === 'object') {
         return {
