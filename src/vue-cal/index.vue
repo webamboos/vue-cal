@@ -359,16 +359,8 @@ export default defineComponent({
 
 
   methods: {
-    setDebounced: debounce(function (value) {
-      this.headingsWidth = {
-        ...this.headingsWidth,
-        [value.date]: value.width,
-      };
-      return this.headingsWidth
-    }, 1),
-
     setHeadingsWidth(value) {
-      this.setDebounced(value)
+      return this.headingsWidth[value.date] = value.width
     },
     /**
      * Only import locale on demand to keep a small library weight.
