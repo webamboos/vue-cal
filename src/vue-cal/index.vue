@@ -70,6 +70,7 @@
                 :transition-direction="transitionDirection"
                 :week-days="weekDays"
                 :switch-to-narrower-view="switchToNarrowerView"
+                :headings-width="computedheadingsWidthArray"
                 :style="cellOrSplitMinWidth ? `min-width: ${cellOrSplitMinWidth}px` : ''")
                 template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
                   slot(name="weekday-heading" :heading="heading" :view="view")
@@ -294,8 +295,8 @@ export default defineComponent({
       // Objects.
       view: this.view,
       domEvents: this.domEvents,
-      headingsWidth: this.headingsWidth,
-      setHeadingsWidth: this.setHeadingsWidth
+      setHeadingsWidth: this.setHeadingsWidth,
+      injectedHeadings:this.headingsWidth
     }
   },
 
@@ -360,13 +361,12 @@ export default defineComponent({
 
   methods: {
     setDebounced: debounce(function (value) {
-      console.log(value)
       this.headingsWidth = {
         ...this.headingsWidth,
         [value.date]: value.width,
       };
       return this.headingsWidth
-    }, 50),
+    }, 1),
 
     setHeadingsWidth(value) {
       this.setDebounced(value)
@@ -1342,7 +1342,7 @@ export default defineComponent({
 
   computed: {
     computedheadingsWidthArray() {
-      return this.headingsWidthArrayT
+      return this.headingsWidth
     },
     editEvents() {
       if (this.editableEvents && typeof this.editableEvents === 'object') {

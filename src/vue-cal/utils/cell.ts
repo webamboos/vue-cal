@@ -6,14 +6,13 @@
  * Meantime keep `_` for private.
  */
 
-const minutesInADay = 24 * 60
+const minutesInADay = 24 * 60;
 
 export default class CellUtils {
-  _vuecal = null
+  _vuecal = null;
 
-  constructor (vuecal,dateUtils,eventUtils) {
-    this._vuecal = vuecal
-
+  constructor(vuecal, dateUtils, eventUtils) {
+    this._vuecal = vuecal;
   }
 
   /**
@@ -25,24 +24,27 @@ export default class CellUtils {
    */
   selectCell = (force = false, date, split) => {
     // Cell-click event returns a date and time at cursor position.
-    this._vuecal.$emit('cell-click', split ? { date, split } : date)
+    this._vuecal.$emit("cell-click", split ? { date, split } : date);
 
     // Switch to narrower view.
-    if (this._vuecal.clickToNavigate || force) this._vuecal.switchToNarrowerView()
-
+    if (this._vuecal.clickToNavigate || force)
+      this._vuecal.switchToNarrowerView();
     // Handle double click manually for touch devices.
-    else if (this._vuecal.dblclickToNavigate && 'ontouchstart' in window) {
-      this._vuecal.domEvents.dblTapACell.taps++
+    else if (this._vuecal.dblclickToNavigate && "ontouchstart" in window) {
+      this._vuecal.domEvents.dblTapACell.taps++;
 
-      setTimeout(() => (this._vuecal.domEvents.dblTapACell.taps = 0), this._vuecal.domEvents.dblTapACell.timeout)
+      setTimeout(
+        () => (this._vuecal.domEvents.dblTapACell.taps = 0),
+        this._vuecal.domEvents.dblTapACell.timeout
+      );
 
       if (this._vuecal.domEvents.dblTapACell.taps >= 2) {
-        this._vuecal.domEvents.dblTapACell.taps = 0
-        this._vuecal.switchToNarrowerView()
-        this._vuecal.$emit('cell-dblclick', split ? { date, split } : date)
+        this._vuecal.domEvents.dblTapACell.taps = 0;
+        this._vuecal.switchToNarrowerView();
+        this._vuecal.$emit("cell-dblclick", split ? { date, split } : date);
       }
     }
-  }
+  };
 
   /**
    * Select a cell and go to narrower view on enter.
@@ -53,11 +55,11 @@ export default class CellUtils {
    */
   keyPressEnterCell = (date, split) => {
     // Cell-key-press-enter event returns a date and time at cursor position.
-    this._vuecal.$emit('cell-keypress-enter', split ? { date, split } : date)
+    this._vuecal.$emit("cell-keypress-enter", split ? { date, split } : date);
 
     // Switch to narrower view.
-    this._vuecal.switchToNarrowerView()
-  }
+    this._vuecal.switchToNarrowerView();
+  };
 
   /**
    * Get the coordinates of the mouse cursor from the cells wrapper referential (`ref="cells"`).
@@ -66,11 +68,12 @@ export default class CellUtils {
    * @param {Object} e the native DOM event object.
    * @return {Object} containing { x: {Number}, y: {Number} }
    */
-  getPosition = e => {
-    const { left, top } = this._vuecal.cellsEl.getBoundingClientRect()
-    const { clientX, clientY } = 'ontouchstart' in window && e.touches ? e.touches[0] : e
-    return { x: clientX - left, y: clientY - top }
-  }
+  getPosition = (e) => {
+    const { left, top } = this._vuecal.cellsEl.getBoundingClientRect();
+    const { clientX, clientY } =
+      "ontouchstart" in window && e.touches ? e.touches[0] : e;
+    return { x: clientX - left, y: clientY - top };
+  };
 
   /**
    * Get the number of minutes from the top to the mouse cursor.
@@ -79,17 +82,22 @@ export default class CellUtils {
    * @param {Object} e the native DOM event object.
    * @return {Object} containing { minutes: {Number}, cursorCoords: { x: {Number}, y: {Number} } }
    */
-  minutesAtCursor = e => {
-    let minutes = 0
-    let cursorCoords = { x: 0, y: 0 }
-    const { timeStep, timeCellHeight, timeFrom } = this._vuecal.$props
+  minutesAtCursor = (e) => {
+    let minutes = 0;
+    let cursorCoords = { x: 0, y: 0 };
+    const { timeStep, timeCellHeight, timeFrom } = this._vuecal.$props;
 
-    if (typeof e === 'number') minutes = e
-    else if (typeof e === 'object') {
-      cursorCoords = this.getPosition(e)
-      minutes = Math.round(cursorCoords.y * timeStep / parseInt(timeCellHeight) + timeFrom)
+    if (typeof e === "number") minutes = e;
+    else if (typeof e === "object") {
+      cursorCoords = this.getPosition(e);
+      minutes = Math.round(
+        (cursorCoords.y * timeStep) / parseInt(timeCellHeight) + timeFrom
+      );
     }
 
-    return { minutes: Math.max(Math.min(minutes, minutesInADay), 0), cursorCoords }
-  }
+    return {
+      minutes: Math.max(Math.min(minutes, minutesInADay), 0),
+      cursorCoords,
+    };
+  };
 }

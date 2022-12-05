@@ -64,7 +64,7 @@ transition-group.vuecal__cell(
 import Event from "./event.vue";
 
 export default {
-  inject: ["vuecal", "utils", "modules", "view", "domEvents", 'headingsWidth', 'setHeadingsWidth'],
+  inject: ["vuecal", "utils", "modules", "view", "domEvents", 'setHeadingsWidth'],
   components: { Event },
   props: {
     // Vue-cal main component options (props).

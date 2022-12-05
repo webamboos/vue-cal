@@ -2,12 +2,11 @@
 //- weekdays-headings are on week view only.
 div
 .vuecal__flex.vuecal__weekdays-headings.syncro-scroll
-
   template(v-for="(heading, i) in headings" :key="i")
     .vuecal__flex.vuecal__heading(
       v-if="!heading.hide"
       :class="{ today: heading.today, clickable: cellHeadingsClickable }"
-      :style="vuecal.hasSplits ? {'min-width':headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj['min-width']?.replace('px','')) + total,0)+ 'px','width':headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj.width?.replace('px','')) + total,0)+ 'px'} :  headingsWidth?.[heading.date]"
+      :style="vuecal.hasSplits ? {'min-width':vuecal.headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj['min-width']?.replace('px','')) + total,0)+ 'px','width':vuecal.headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj.width?.replace('px','')) + total,0)+ 'px'} :  vuecal.headingsWidth?.[heading.date]"
       @click="['week', 'xdays'].includes(view.id) && selectCell(heading.date, $event)"
       @dblclick="['week', 'xdays'].includes(view.id) && vuecal.dblclickToNavigate && switchToNarrowerView()")
       transition(:name="`slide-fade--${transitionDirection}`" :appear="vuecal.transitions")
@@ -28,16 +27,13 @@ div
 
 <script>
 export default {
-  inject: ["vuecal", "utils", "modules", "view", "domEvents", 'headingsWidth', 'setHeadingsWidth'],
+  inject: ["vuecal", "utils", "modules", "view", "domEvents",],
   props: {
     transitionDirection: { type: String, default: "right" },
     weekDays: { type: Array, default: () => [] },
     switchToNarrowerView: { type: Function, default: () => { } },
     data: { type: Object, required: true },
   },
-  // data: () => ({
-  //   headWidth: [],
-  // }),
 
   methods: {
     selectCell(date, DOMEvent) {
@@ -53,16 +49,6 @@ export default {
     }),
   },
 
-  watch: {
-    headingsWidth: {
-      // To be able to detect an event attribute change, it has to be first initialized with a value.
-      handler(events, oldEvents) {
-        console.log("events", events)
-        console.log("oldevents", oldEvents)
-      },
-      deep: true
-    }
-  },
 
 
 
