@@ -360,7 +360,7 @@ export default defineComponent({
 
   methods: {
     setHeadingsWidth(value) {
-      return this.headingsWidth[value.date] = value.width
+      return this.headingsWidth[value.date] = {width:value.width, count:value.count}
     },
     /**
      * Only import locale on demand to keep a small library weight.

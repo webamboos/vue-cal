@@ -505,7 +505,7 @@ export default {
           this.setHeadingsWidth({
             date: this.data.startDate,
             width: cellsWidthArray,
-            splits: this.splitsCount,
+            count: this.eventsCount,
           });
         });
       } else {
@@ -520,7 +520,7 @@ export default {
         this.setHeadingsWidth({
           date: this.data.startDate,
           width: minWidthProp,
-          splits: this.splitsCount,
+          count: this.eventsCount,
         });
       }
       return this.splitsCount > 0

@@ -5,8 +5,8 @@ div
   template(v-for="(heading, i) in headings" :key="i")
     .vuecal__flex.vuecal__heading(
       v-if="!heading.hide"
-      :class="{ today: heading.today, clickable: cellHeadingsClickable }"
-      :style="vuecal.hasSplits ? {'min-width':vuecal.headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj['min-width']?.replace('px','')) + total,0)+ 'px','width':vuecal.headingsWidth?.[heading.date]?.reduce((total, obj) => Number(obj.width?.replace('px','')) + total,0)+ 'px'} :  vuecal.headingsWidth?.[heading.date]"
+      :class="{ today: heading.today, clickable: cellHeadingsClickable, 'vuecal__heading--has-events': vuecal.headingsWidth?.[heading.date]?.count > 0}"
+      :style="vuecal.hasSplits ? {'min-width':vuecal.headingsWidth?.[heading.date]?.width?.reduce((total, obj) => Number(obj['min-width']?.replace('px','')) + total,0)+ 'px','width':vuecal.headingsWidth?.[heading.date]?.width?.reduce((total, obj) => Number(obj.width?.replace('px','')) + total,0)+ 'px'} :  vuecal.headingsWidth?.[heading.date]?.width"
       @click="['week', 'xdays'].includes(view.id) && selectCell(heading.date, $event)"
       @dblclick="['week', 'xdays'].includes(view.id) && vuecal.dblclickToNavigate && switchToNarrowerView()")
       transition(:name="`slide-fade--${transitionDirection}`" :appear="vuecal.transitions")
