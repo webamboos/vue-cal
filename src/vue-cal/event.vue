@@ -255,11 +255,8 @@ export default {
       )
         return {};
 
-      const widthForWeek = this.overlapsStreak ;
 
-          const widthForDay = this.overlapsStreak + 1
-  
-      let width = 100 / (!this.isDayView ? widthForWeek : widthForDay);
+      let width = 100 / this.overlapsStreak ;
       let left = width * this.eventPosition;
 
       const { top, height } = this.eventDimensions;
