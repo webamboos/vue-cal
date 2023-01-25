@@ -111,7 +111,7 @@
                   )
                   template(#cell-content="{ events, split, selectCell }")
                     slot(name="cell-content" :cell="cell" :view="view" :go-narrower="selectCell" :events="events")
-                      .split-label(v-if="split && !stickySplitLabels" v-html="split.label")
+                      .split-label(v-if="split && !stickySplitLabels" v-html="split.label" :style="headingsWidthDay && headingsWidthDay?.[split.id] && headingsWidthDay?.[split.id]?.width? headingsWidthDay?.[split.id]?.width  : ''")
                       .vuecal__cell-date(v-if="cell.content" v-html="cell.content")
                       .vuecal__cell-events-count(v-if="((isMonthView && !eventsOnMonthView) || (isYearsOrYearView && eventsCountOnYearView)) && events.length")
                         slot(name="events-count" :view="view" :events="events") {{ events.length }}
@@ -150,7 +150,6 @@ import WeekdaysHeadings from './weekdays-headings.vue'
 import AllDayBar from './all-day-bar.vue'
 import Cell from './cell.vue'
 import './styles.scss'
-import { debounce } from 'lodash'
 
 const minutesInADay = 24 * 60 // Don't do the maths every time.
 const textsDefaults = {
@@ -187,6 +186,7 @@ export default defineComponent({
   data() {
     return {
       headingsWidth: [],
+      headingsWidthDay: {},
       ready: false, // Is vue-cal ready.
       // Make texts reactive before a locale is loaded.
       texts: { ...textsDefaults },
@@ -295,6 +295,7 @@ export default defineComponent({
       view: this.view,
       domEvents: this.domEvents,
       setHeadingsWidth: this.setHeadingsWidth,
+      setHeadingsWidthDay: this.setHeadingsWidthDay,
       injectedHeadings:this.headingsWidth
     }
   },
@@ -361,6 +362,9 @@ export default defineComponent({
   methods: {
     setHeadingsWidth(value) {
       return this.headingsWidth[value.date] = {width:value.width, count:value.count}
+    },
+    setHeadingsWidthDay(value) {
+      return this.headingsWidthDay[value.id] = {width:value.width, count:value.count}
     },
     /**
      * Only import locale on demand to keep a small library weight.

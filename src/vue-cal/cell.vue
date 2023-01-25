@@ -64,7 +64,15 @@ transition-group.vuecal__cell(
 import Event from "./event.vue";
 
 export default {
-  inject: ["vuecal", "utils", "modules", "view", "domEvents", 'setHeadingsWidth'],
+  inject: [
+    "vuecal",
+    "utils",
+    "modules",
+    "view",
+    "domEvents",
+    "setHeadingsWidth",
+    "setHeadingsWidthDay",
+  ],
   components: { Event },
   props: {
     // Vue-cal main component options (props).
@@ -505,6 +513,14 @@ export default {
           this.setHeadingsWidth({
             date: this.data.startDate,
             width: cellsWidthArray,
+            count: this.eventsCount,
+          });
+          this.setHeadingsWidthDay({
+            id: o.id,
+            width: {
+              "min-width": `${minWidth}px`,
+              width: `${minWidth}px`,
+            },
             count: this.eventsCount,
           });
         });
