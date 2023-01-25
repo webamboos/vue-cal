@@ -61,7 +61,7 @@
   //- Sticky split-days headers on day view only.
   transition(:name="`slide-fade--${transitionDirection}`")
     .vuecal__flex.vuecal__split-days-headers(v-if="showDaySplits")
-      .day-split-header(v-for="(split, i) in daySplits" :key="i" :class="split.class || false")
+      .day-split-header(v-for="(split, i) in daySplits" :key="i" :class="split.class || false" :style="view.id === 'day' && vuecal.headingsWidthDay && vuecal.headingsWidthDay?.[split.id] && vuecal.headingsWidthDay?.[split.id]?.width? vuecal.headingsWidthDay?.[split.id]?.width  : ''")
         slot(name="split-label" :split="split" :view="view.id" :sizes="view.id === 'day' && vuecal.headingsWidthDay && vuecal.headingsWidthDay?.[split.id] && vuecal.headingsWidthDay?.[split.id]?.width? vuecal.headingsWidthDay?.[split.id]?.width  : ''") {{ split.label }}
 </template>
 

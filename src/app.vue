@@ -511,7 +511,7 @@ const events  = [
   },
 ];
 
-const split = [{
+const splits = [{
         id: "d1ffcc93-2ada-47ae-9e80-bad090c7248a",
         label: 'test',
         class: 'split-size',
@@ -550,8 +550,13 @@ const now = new Date();
 
 <template>
   <div>
-    <VueCal :x-days-interval="7" :x-days-start="now" :split-days="split" :active-view="'day'" :events="events" :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }" >
-    
+    <VueCal :x-days-interval="7" :x-days-start="now" :split-days="splits" :active-view="'day'" :events="events" :editable-events="{ title: true, drag: false, resize: true, delete: true, create: true }" >
+      <template #split-label="{ split, view, sizes }">
+        <div class="split-label">
+          <div class="split-label__label">{{ split.label }}</div>
+          <div class="split-label__size">style = {{sizes }}</div>
+        </div>
+        </template>
     </VueCal>
   </div>
 </template>
