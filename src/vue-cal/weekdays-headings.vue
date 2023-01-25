@@ -22,7 +22,7 @@ div
             v-if="vuecal.hasSplits && vuecal.stickySplitLabels"
             grow)
             .day-split-header(v-for="(split, i) in vuecal.daySplits" :key="i" :class="split.class || false")
-              slot(name="split-label" :split="split" :view="view") {{ split.label }}
+              slot(name="split-label" :split="split" :view="view" :sizes="view.id === 'day' && vuecal.headingsWidthDay && vuecal.headingsWidthDay?.[split.id] && vuecal.headingsWidthDay?.[split.id]?.width? vuecal.headingsWidthDay?.[split.id]?.width  : ''") {{ split.label }}
 </template>
 
 <script>

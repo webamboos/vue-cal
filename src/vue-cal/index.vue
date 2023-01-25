@@ -27,7 +27,7 @@
     template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
       slot(name="weekday-heading" :heading="heading" :view="view")
     template(#split-label="{ split }" v-if="$slots['split-label']")
-      slot(name="split-label" :split="split" :view="view.id" :style="isDayView && headingsWidthDay && headingsWidthDay?.[split.id] && headingsWidthDay?.[split.id]?.width? headingsWidthDay?.[split.id]?.width  : ''")
+      slot(name="split-label" :split="split" :view="view.id" :sizes="isDayView && headingsWidthDay && headingsWidthDay?.[split.id] && headingsWidthDay?.[split.id]?.width? headingsWidthDay?.[split.id]?.width  : ''")
 
   .vuecal__flex.vuecal__body(v-if="!hideBody" grow)
     transition(:name="`slide-fade--${transitionDirection}`" :appear="transitions")
@@ -75,7 +75,7 @@
                 template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
                   slot(name="weekday-heading" :heading="heading" :view="view")
                 template(#split-label="{ split }")
-                  slot(name="split-label" :split="split" :view="view.id" :style="isDayView && headingsWidthDay && headingsWidthDay?.[split.id] && headingsWidthDay?.[split.id]?.width? headingsWidthDay?.[split.id]?.width  : ''")
+                  slot(name="split-label" :split="split" :view="view.id" :sizes="isDayView && headingsWidthDay && headingsWidthDay?.[split.id] && headingsWidthDay?.[split.id]?.width? headingsWidthDay?.[split.id]?.width  : ''")
               .vuecal__flex.vuecal__split-days-headers(v-else-if="hasSplits && stickySplitLabels && minSplitWidth"
                 :style="cellOrSplitMinWidth ? `min-width: ${cellOrSplitMinWidth}px` : ''")
                 .day-split-header(v-for="(split, i) in daySplits" :key="i" :class="split.class || false")
@@ -112,7 +112,7 @@
                   )
                   template(#cell-content="{ events, split, selectCell }")
                     slot(name="cell-content" :cell="cell" :view="view" :go-narrower="selectCell" :events="events")
-                      .split-label(v-if="split && !stickySplitLabels" v-html="split.label" :style="isDayView && headingsWidthDay && headingsWidthDay?.[split.id] && headingsWidthDay?.[split.id]?.width? headingsWidthDay?.[split.id]?.width  : ''")
+                      .split-label(v-if="split && !stickySplitLabels" v-html="split.label" :sizes="isDayView && headingsWidthDay && headingsWidthDay?.[split.id] && headingsWidthDay?.[split.id]?.width? headingsWidthDay?.[split.id]?.width  : ''")
                       .vuecal__cell-date(v-if="cell.content" v-html="cell.content")
                       .vuecal__cell-events-count(v-if="((isMonthView && !eventsOnMonthView) || (isYearsOrYearView && eventsCountOnYearView)) && events.length")
                         slot(name="events-count" :view="view" :events="events") {{ events.length }}
