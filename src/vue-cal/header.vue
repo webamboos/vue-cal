@@ -55,14 +55,14 @@
     :switch-to-narrower-view="switchToNarrowerView")
     template(#weekday-heading="{ heading, view }" v-if="$slots['weekday-heading']")
       slot(name="weekday-heading" :heading="heading" :view="view")
-    template(#split-label="{ split }" v-if="$slots['split-label']")
-      slot(name="split-label" :split="split" :view="view")
+    template(#split-label="{ split }" v-if="$slots['split-label']" )
+      slot(name="split-label" :split="split" :view="view" :style="view.id === 'day' && vuecal.headingsWidthDay && vuecal.headingsWidthDay?.[split.id] && vuecal.headingsWidthDay?.[split.id]?.width? vuecal.headingsWidthDay?.[split.id]?.width  : ''")
 
   //- Sticky split-days headers on day view only.
   transition(:name="`slide-fade--${transitionDirection}`")
     .vuecal__flex.vuecal__split-days-headers(v-if="showDaySplits")
       .day-split-header(v-for="(split, i) in daySplits" :key="i" :class="split.class || false")
-        slot(name="split-label" :split="split" :view="view.id") {{ split.label }}
+        slot(name="split-label" :split="split" :view="view.id" :style="view.id === 'day' && vuecal.headingsWidthDay && vuecal.headingsWidthDay?.[split.id] && vuecal.headingsWidthDay?.[split.id]?.width? vuecal.headingsWidthDay?.[split.id]?.width  : ''") {{ split.label }}
 </template>
 
 <script>
